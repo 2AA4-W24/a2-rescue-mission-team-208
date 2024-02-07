@@ -3,7 +3,7 @@
 
 - Authors:
   - [Firstname_1, Lastname_1](macid@mcmaster.ca) 
-  - [Firstname_2, Lastname_2](macid@mcmaster.ca)
+  - [Andrew, Habib](habiba21@mcmaster.ca)
   - [Ahmed, Rashrash](rashrasa@mcmaster.ca)
 
 ## Product Description
