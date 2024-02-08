@@ -1,10 +1,10 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/OY6OZuzi)
-# [A2] Island ca.mcmaster.se2aa4.island.team00.Explorer
+# [A2] Island ca.mcmaster.se2aa4.island.team208.Explorer
 
 - Authors:
   - [Ruida,Chen](chenr110@mcmaster.ca) 
-  - [Firstname_2, Lastname_2](macid@mcmaster.ca)
-  - [Firstname_3, Lastname_3](macid@mcmaster.ca)
+  - [Andrew, Habib](habiba21@mcmaster.ca)
+  - [Ahmed, Rashrash](rashrasa@mcmaster.ca)
 
 ## Product Description
 
