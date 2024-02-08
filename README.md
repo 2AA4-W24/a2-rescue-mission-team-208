@@ -2,7 +2,7 @@
 # [A2] Island ca.mcmaster.se2aa4.island.team208.Explorer
 
 - Authors:
-  - [Firstname_1, Lastname_1](macid@mcmaster.ca) 
+  - [Ruida,Chen](chenr110@mcmaster.ca) 
   - [Andrew, Habib](habiba21@mcmaster.ca)
   - [Ahmed, Rashrash](rashrasa@mcmaster.ca)
 
