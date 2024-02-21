@@ -12,6 +12,7 @@ public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
     private Decider decider = new Decider();
+    private Results results;
 
     @Override
     public void initialize(String s) {
@@ -36,14 +37,11 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public void acknowledgeResults(String s) {
-        JSONObject response = new JSONObject(new JSONTokener(new StringReader(s)));
-        logger.info("** Response received:\n"+response.toString(2));
-        Integer cost = response.getInt("cost");
-        logger.info("The cost of the action was {}", cost);
-        String status = response.getString("status");
-        logger.info("The status of the drone is {}", status);
-        JSONObject extraInfo = response.getJSONObject("extras");
-        logger.info("Additional information received: {}", extraInfo);
+        results = new Results(s);
+        logger.info("** Response received:\n"+ results.getResponse());
+        logger.info("The cost of the action was {}", results.getCost());
+        logger.info("The status of the drone is {}", results.getStatus());
+        logger.info("Additional information received: {}", results.getExtraInfo());
     }
 
     @Override
