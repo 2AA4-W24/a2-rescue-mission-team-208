@@ -12,8 +12,11 @@ public class Results {
     public Results(String s) {
         response = new JSONObject(new JSONTokener(new StringReader(s)));
     }
+    public JSONObject getResponse(){
+        return response;
+    }
 
-    public String getResponse() {
+    public String getResponseString() {
         return response.toString(2);
     }
 
@@ -25,8 +28,12 @@ public class Results {
         return response.getString("status");
     }
 
+    public String getAction(){
+        return response.getString("action");
+    }
+
     public JSONObject getExtraInfo() {
         return response.getJSONObject("extras");
     }
-
+    
 }
