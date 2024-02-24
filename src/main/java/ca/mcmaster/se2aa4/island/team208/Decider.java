@@ -10,6 +10,7 @@ public class Decider {
     private String decision;
     private final Logger logger = LogManager.getLogger();
     private JSONObject json_decision = new JSONObject();
+    private int count = 0;
 
     public Decider() {
         this.decision = "";
@@ -19,7 +20,22 @@ public class Decider {
 
         this.decision = curr_decision;
         json_decision.put("action", this.decision); // we stop the exploration immediately
+        
+        if(curr_decision == "fly"){
+            count+=1;
+        }
+        json_decision.put("count",count);
+        logger.info("action times: "+count);
         logger.info("** Decision: {}", json_decision.toString());
+
+    }
+    public void sendEcho(String direction){
+        this.decision = "echo";
+        JSONObject parameter = new JSONObject();
+        parameter.put("direction", direction);
+        json_decision.put("action", this.decision);
+        json_decision.put("parameters", parameter);
+        logger.info("Decision: {}",json_decision.toString());
 
     }
 
