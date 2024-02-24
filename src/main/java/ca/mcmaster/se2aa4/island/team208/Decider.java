@@ -39,10 +39,6 @@ public class Decider {
 
     }
 
-    public String getPrevDecision() {
-        return this.decision;
-    }
-
     public String getJsonDecision() {
         return json_decision.toString();
     }
