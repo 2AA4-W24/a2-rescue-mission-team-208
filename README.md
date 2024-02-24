@@ -4,7 +4,7 @@
 - Authors:
   - [Ruida,Chen](chenr110@mcmaster.ca) 
   - [Andrew, Habib](habiba21@mcmaster.ca)
-  - [Ahmed, Rashrash](rashrasa@mcmaster.ca)
+  - [Rashrash, Ahmed](rashrasa@mcmaster.ca)
 
 ## Product Description
 
