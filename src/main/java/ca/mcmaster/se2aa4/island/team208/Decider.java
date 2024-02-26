@@ -15,12 +15,11 @@ public class Decider {
     public Decider() {
         this.decision = "";
     }
-
     public void decide(String curr_decision) {
 
         this.decision = curr_decision;
         json_decision.put("action", this.decision); // we stop the exploration immediately
-        
+
         if(curr_decision == "fly"){
             count+=1;
         }
@@ -29,6 +28,15 @@ public class Decider {
         logger.info("** Decision: {}", json_decision.toString());
 
     }
+    public void decide(String decision, int count, JSONObject parameters){
+        json_decision.put("action",decision);
+        if (count>0)json_decision.put("count",count);
+        if(parameters!=null)json_decision.put("parameters",parameters);
+        logger.info("** Decision: {}", json_decision.toString());
+
+    }
+
+
     public void sendEcho(String direction){
         this.decision = "echo";
         JSONObject parameter = new JSONObject();

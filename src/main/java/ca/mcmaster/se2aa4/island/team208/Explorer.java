@@ -13,7 +13,8 @@ public class Explorer implements IExplorerRaid {
     private final Logger logger = LogManager.getLogger();
     private Decider decider = new Decider();
     private Results results;
-    private int count = 0;
+    private int count = -1;
+    private int flyCount=0;
     private Drone drone = new Drone();
     private RescueAreaMap areaMap = new RescueAreaMap();
 
@@ -37,6 +38,7 @@ public class Explorer implements IExplorerRaid {
         } else {
             decider.decide("fly");
         }*/
+        /*
         int maxDistance = areaMap.getMaxDistanceBeforeMIA();
         String[] echoList = echoList(drone);
 
@@ -59,6 +61,48 @@ public class Explorer implements IExplorerRaid {
 
         }
         count++;
+
+
+         */
+
+
+        //Fly till the end
+        if(count==-1){
+            decider.sendEcho(drone.getDirection());
+            count++;
+        }
+        else if(count%3==0){
+            if(flyCount<areaMap.getMaxDistanceBeforeMIA()){
+                decider.decide("fly",10,new JSONObject().put("direction",drone.getDirection()));
+                flyCount+=10;
+            }
+            else{
+                decider.decide("stop",0,new JSONObject().put("direction",drone.getDirection()));
+            }
+            count++;
+        }
+        else if(count%3==1){
+            if(flyCount<areaMap.getMaxDistanceBeforeMIA()){
+                decider.decide("scan",0,null);
+
+            }
+            else{
+                decider.decide("stop",0,new JSONObject().put("direction",drone.getDirection()));
+            }
+            count++;
+        }
+        else{
+            if(flyCount>=areaMap.getMaxDistanceBeforeMIA()){
+                decider.decide("stop",0,new JSONObject().put("direction",drone.getDirection()));
+            }
+            count++;
+
+        }
+
+
+
+        logger.info("JSON Decision: "+decider.getJsonDecision());
+
         return decider.getJsonDecision();
     }
 
