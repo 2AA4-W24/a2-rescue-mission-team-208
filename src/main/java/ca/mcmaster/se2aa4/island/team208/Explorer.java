@@ -20,15 +20,9 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public void initialize(String s) {
-        logger.info("** Initializing the Exploration Command Center");
-        JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
-        logger.info("** Initialization info:\n {}",info.toString(2));
-        drone.initializeDrone(info);
-
-        String direction = info.getString("heading");
-        Integer batteryLevel = info.getInt("budget");
-        logger.info("The drone is facing {}", direction);
-        logger.info("Battery level is {}", batteryLevel);
+        Configuration config = new Configuration(s);
+        config.printStatus();
+        drone.initializeDrone(config.getInfo());
     }
 
     @Override
