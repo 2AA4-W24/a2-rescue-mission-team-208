@@ -20,15 +20,9 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public void initialize(String s) {
-        logger.info("** Initializing the Exploration Command Center");
-        JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
-        logger.info("** Initialization info:\n {}",info.toString(2));
-        drone.initializeDrone(info);
-
-        String direction = info.getString("heading");
-        Integer batteryLevel = info.getInt("budget");
-        logger.info("The drone is facing {}", direction);
-        logger.info("Battery level is {}", batteryLevel);
+        Configuration config = new Configuration(s);
+        config.printStatus();
+        drone.initializeDrone(config.getInfo());
     }
 
     @Override
@@ -64,8 +58,7 @@ public class Explorer implements IExplorerRaid {
 
 
          */
-
-
+        /*
         //Fly till the end
         if(count==-1){
             decider.sendEcho(drone.getDirection());
@@ -73,37 +66,38 @@ public class Explorer implements IExplorerRaid {
         }
         else if(count%3==0){
             if(flyCount<areaMap.getMaxDistanceBeforeMIA()){
-                decider.decide("fly",10,new JSONObject().put("direction",drone.getDirection()));
+                decider.decide(Action.fly,10,new JSONObject().put("direction",drone.getDirection()));
                 flyCount+=10;
             }
             else{
-                decider.decide("stop",0,new JSONObject().put("direction",drone.getDirection()));
+                decider.decide(Action.stop,0,new JSONObject().put("direction",drone.getDirection()));
             }
             count++;
         }
         else if(count%3==1){
             if(flyCount<areaMap.getMaxDistanceBeforeMIA()){
-                decider.decide("scan",0,null);
+                decider.decide(Action.scan,0,null);
 
             }
             else{
-                decider.decide("stop",0,new JSONObject().put("direction",drone.getDirection()));
+                decider.decide(Action.stop,0,new JSONObject().put("direction",drone.getDirection()));
             }
             count++;
         }
         else{
             if(flyCount>=areaMap.getMaxDistanceBeforeMIA()){
-                decider.decide("stop",0,new JSONObject().put("direction",drone.getDirection()));
+                decider.decide(Action.stop,0,new JSONObject().put("direction",drone.getDirection()));
             }
             count++;
 
         }
 
+         */
 
+        decider.setNextDecision();
+        logger.info("JSON Decision: "+decider.getDecision());
 
-        logger.info("JSON Decision: "+decider.getJsonDecision());
-
-        return decider.getJsonDecision();
+        return decider.getDecision();
     }
 
     @Override
