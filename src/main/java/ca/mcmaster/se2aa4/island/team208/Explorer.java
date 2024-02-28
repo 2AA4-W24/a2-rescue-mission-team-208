@@ -21,17 +21,17 @@ public class Explorer implements IExplorerRaid {
     @Override
     public void initialize(String s) {
         Configuration config = new Configuration(s);
-        config.printStatus();
         drone.initializeDrone(config.getInfo());
+        config.printStatus();
     }
 
     @Override
     public String takeDecision(){
-        /*if (decider.getPrevDecision() == "fly") {
-            decider.decide("stop");
-        } else {
-            decider.decide("fly");
-        }*/
+//        if (decider.getDecision() == "fly") {
+//            decider.decide(Action.stop);
+//        } else {
+//            decider.decide(Action.fly);
+//        }
         /*
         int maxDistance = areaMap.getMaxDistanceBeforeMIA();
         String[] echoList = echoList(drone);
@@ -108,11 +108,7 @@ public class Explorer implements IExplorerRaid {
             // Assuming your echo result is in the same format as the action
             areaMap.updateFromEchoResult(results.getResponse());
         }
-    
-        logger.info("** Response received:\n"+ results.getResponseString());
-        logger.info("The cost of the action was {}", results.getCost());
-        logger.info("The status of the drone is {}", results.getStatus());
-        logger.info("Additional information received: {}", results.getExtraInfo());
+        results.printResults();
     }
 
     @Override
