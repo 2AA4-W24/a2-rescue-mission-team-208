@@ -14,15 +14,9 @@ public class Drone {
     private String direction;
     private int battery;
 
-    private Radar frontRadar,leftRadar,rightRadar;
-
     public void initializeDrone(JSONObject info){
-        this.direction = info.getString("heading");
+        this.direction = info.getString("HEADING");
         this.battery = info.getInt("budget");
-
-        this.frontRadar=new Radar();
-        this.rightRadar=new Radar();
-        this.leftRadar=new Radar();
 
     }
 

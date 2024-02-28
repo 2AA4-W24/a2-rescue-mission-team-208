@@ -27,10 +27,10 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String takeDecision(){
-//        if (decider.getDecision() == "fly") {
-//            decider.decide(Action.stop);
+//        if (decider.getDecision() == "FLY") {
+//            decider.decide(Action.STOP);
 //        } else {
-//            decider.decide(Action.fly);
+//            decider.decide(Action.FLY);
 //        }
         /*
         int maxDistance = areaMap.getMaxDistanceBeforeMIA();
@@ -41,16 +41,16 @@ public class Explorer implements IExplorerRaid {
             decider.sendEcho(echoList[0]);
             break;
             case 1 :
-            logger.info("For direction: "+echoList[this.count-1]+"The drone can fly " + maxDistance + " units forward before going MIA for falling out of the radio range.");
+            logger.info("For direction: "+echoList[this.count-1]+"The drone can FLY " + maxDistance + " units forward before going MIA for falling out of the radio range.");
             decider.sendEcho(echoList[1]);
             break;
             case 2 :
-            logger.info("For direction: "+echoList[this.count-1]+"The drone can fly " + maxDistance + " units forward before going MIA for falling out of the radio range.");
+            logger.info("For direction: "+echoList[this.count-1]+"The drone can FLY " + maxDistance + " units forward before going MIA for falling out of the radio range.");
             decider.sendEcho(echoList[2]);
             break;
             case 3 :
-            logger.info("For direction: "+echoList[this.count-1]+"The drone can fly " + maxDistance + " units forward before going MIA for falling out of the radio range.");
-            decider.decide("stop");
+            logger.info("For direction: "+echoList[this.count-1]+"The drone can FLY " + maxDistance + " units forward before going MIA for falling out of the radio range.");
+            decider.decide("STOP");
             break;
 
         }
@@ -66,27 +66,27 @@ public class Explorer implements IExplorerRaid {
         }
         else if(count%3==0){
             if(flyCount<areaMap.getMaxDistanceBeforeMIA()){
-                decider.decide(Action.fly,10,new JSONObject().put("direction",drone.getDirection()));
+                decider.decide(Action.FLY,10,new JSONObject().put("direction",drone.getDirection()));
                 flyCount+=10;
             }
             else{
-                decider.decide(Action.stop,0,new JSONObject().put("direction",drone.getDirection()));
+                decider.decide(Action.STOP,0,new JSONObject().put("direction",drone.getDirection()));
             }
             count++;
         }
         else if(count%3==1){
             if(flyCount<areaMap.getMaxDistanceBeforeMIA()){
-                decider.decide(Action.scan,0,null);
+                decider.decide(Action.SCAN,0,null);
 
             }
             else{
-                decider.decide(Action.stop,0,new JSONObject().put("direction",drone.getDirection()));
+                decider.decide(Action.STOP,0,new JSONObject().put("direction",drone.getDirection()));
             }
             count++;
         }
         else{
             if(flyCount>=areaMap.getMaxDistanceBeforeMIA()){
-                decider.decide(Action.stop,0,new JSONObject().put("direction",drone.getDirection()));
+                decider.decide(Action.STOP,0,new JSONObject().put("direction",drone.getDirection()));
             }
             count++;
 

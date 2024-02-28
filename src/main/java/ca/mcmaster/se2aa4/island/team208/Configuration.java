@@ -15,7 +15,7 @@ public class Configuration {
 
     public Configuration (String input) {
         this.info = new JSONObject(new JSONTokener(new StringReader(input)));
-        this.direction = info.getString("heading");
+        this.direction = info.getString("HEADING");
         this.battery = info.getInt("budget");
     }
 

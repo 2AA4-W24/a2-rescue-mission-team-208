@@ -1,12 +1,12 @@
 package ca.mcmaster.se2aa4.island.team208;
 
 public enum Action {
-    fly("fly"),
-    heading("heading"),
-    echo("echo"),
-    scan("scan"),
-    stop("stop"),
-    land("land");
+    FLY("fly"),
+    HEADING("heading"),
+    ECHO("echo"),
+    SCAN("scan"),
+    STOP("stop"),
+    LAND("land");
 
     private String action_string;
 

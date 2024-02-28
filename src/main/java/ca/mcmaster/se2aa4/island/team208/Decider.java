@@ -18,7 +18,7 @@ public class Decider {
     public Decider() {
     }
 
-    //function needs to eventually reach "stop" and stay there
+    //function needs to eventually reach "STOP" and stay there
     public void setNextDecision(){
         previousDecisions.add(decision.toString());
 
@@ -26,14 +26,14 @@ public class Decider {
         double random = Math.random();
 
         //decision generation logic
-        if (this.decision.get("action")!="stop" && random > .5) {
-            this.decide(Action.fly);
+        if (this.decision.get("action")!="STOP" && random > .5) {
+            this.decide(Action.FLY);
         }
         else if(random<=.5 &&random>.2){
-            this.decide(Action.scan);
+            this.decide(Action.SCAN);
         }
         else {
-            this.decide(Action.stop);
+            this.decide(Action.STOP);
         }
 
 
@@ -43,9 +43,9 @@ public class Decider {
     public void decide(String curr_decision) {
 
         this.decision = curr_decision;
-        decision.put("action", this.decision); // we stop the exploration immediately
+        decision.put("action", this.decision); // we STOP the exploration immediately
 
-        if(curr_decision == "fly"){
+        if(curr_decision == "FLY"){
             count+=1;
         }
         decision.put("count",count);
