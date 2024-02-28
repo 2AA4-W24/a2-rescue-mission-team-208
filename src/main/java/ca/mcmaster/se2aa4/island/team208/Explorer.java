@@ -13,8 +13,6 @@ public class Explorer implements IExplorerRaid {
     private final Logger logger = LogManager.getLogger();
     private Decider decider = new Decider();
     private Results results;
-    private int count = -1;
-    private int flyCount=0;
     private Drone drone = new Drone();
     private RescueAreaMap areaMap = new RescueAreaMap();
 
@@ -117,6 +115,7 @@ public class Explorer implements IExplorerRaid {
     }
 
     //echoList method returns a string array including 3 directions which can be echoed due to the facing direction.
+    /*
     public String[] echoList(Drone drone){
         String dir = drone.getDirection();
         String[] result = new String[3];
@@ -138,5 +137,7 @@ public class Explorer implements IExplorerRaid {
         }
         return result;
     }
+
+     */
 
 }

@@ -2,9 +2,11 @@ package ca.mcmaster.se2aa4.island.team208;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import javax.naming.NameNotFoundException;
 import java.io.StringReader;
 
 public class Configuration {
@@ -15,8 +17,15 @@ public class Configuration {
 
     public Configuration (String input) {
         this.info = new JSONObject(new JSONTokener(new StringReader(input)));
-        this.direction = info.getString("HEADING");
-        this.battery = info.getInt("budget");
+        try{
+            this.direction = info.getString("heading");
+            this.battery = info.getInt("budget");
+        }
+        catch (JSONException e){
+            logger.fatal("Could not find drone information.");
+            logger.info(info.toString());
+        }
+
     }
 
     public JSONObject getInfo() {

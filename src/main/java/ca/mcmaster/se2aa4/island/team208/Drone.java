@@ -15,7 +15,7 @@ public class Drone {
     private int battery;
 
     public void initializeDrone(JSONObject info){
-        this.direction = info.getString("HEADING");
+        this.direction = info.getString("heading");
         this.battery = info.getInt("budget");
 
     }
@@ -24,6 +24,7 @@ public class Drone {
         return this.direction;
 
     }
+    /*
     public String echo(String direction) throws Exception {
         Direction d = Direction.valueOf(direction.toUpperCase());
 
@@ -35,6 +36,8 @@ public class Drone {
 
         return "";
     }
+
+     */
 
     public int getBattery(){
         return this.battery;
