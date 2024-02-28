@@ -58,8 +58,7 @@ public class Explorer implements IExplorerRaid {
 
 
          */
-
-
+        /*
         //Fly till the end
         if(count==-1){
             decider.sendEcho(drone.getDirection());
@@ -67,37 +66,38 @@ public class Explorer implements IExplorerRaid {
         }
         else if(count%3==0){
             if(flyCount<areaMap.getMaxDistanceBeforeMIA()){
-                decider.decide("fly",10,new JSONObject().put("direction",drone.getDirection()));
+                decider.decide(Action.fly,10,new JSONObject().put("direction",drone.getDirection()));
                 flyCount+=10;
             }
             else{
-                decider.decide("stop",0,new JSONObject().put("direction",drone.getDirection()));
+                decider.decide(Action.stop,0,new JSONObject().put("direction",drone.getDirection()));
             }
             count++;
         }
         else if(count%3==1){
             if(flyCount<areaMap.getMaxDistanceBeforeMIA()){
-                decider.decide("scan",0,null);
+                decider.decide(Action.scan,0,null);
 
             }
             else{
-                decider.decide("stop",0,new JSONObject().put("direction",drone.getDirection()));
+                decider.decide(Action.stop,0,new JSONObject().put("direction",drone.getDirection()));
             }
             count++;
         }
         else{
             if(flyCount>=areaMap.getMaxDistanceBeforeMIA()){
-                decider.decide("stop",0,new JSONObject().put("direction",drone.getDirection()));
+                decider.decide(Action.stop,0,new JSONObject().put("direction",drone.getDirection()));
             }
             count++;
 
         }
 
+         */
 
+        decider.setNextDecision();
+        logger.info("JSON Decision: "+decider.getDecision());
 
-        logger.info("JSON Decision: "+decider.getJsonDecision());
-
-        return decider.getJsonDecision();
+        return decider.getDecision();
     }
 
     @Override
