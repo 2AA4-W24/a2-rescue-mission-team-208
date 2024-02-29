@@ -57,6 +57,7 @@ public class Decider {
         }
         for(int i=0; i<flyAmount;i++){
             this.decisionQueue.add(Action.FLY);
+            this.decisionQueue.add(Action.SCAN);
         }
         if(flyAmount==0){
             this.decisionQueue.add(Action.SCAN);
