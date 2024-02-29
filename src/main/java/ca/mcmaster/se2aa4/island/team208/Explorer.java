@@ -11,10 +11,16 @@ import org.json.JSONTokener;
 public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
-    private Decider decider = new Decider();
+    private Decider decider;
     private Results results;
-    private Drone drone = new Drone();
-    private RescueAreaMap areaMap = new RescueAreaMap();
+    private Drone drone;
+    private RescueAreaMap areaMap;
+
+    public Explorer(){
+        this.areaMap = new RescueAreaMap();
+        this.drone = new Drone();
+        this.decider = new Decider(this.drone, this.areaMap);
+    }
 
     @Override
     public void initialize(String s) {
@@ -92,10 +98,10 @@ public class Explorer implements IExplorerRaid {
 
          */
 
-        decider.setNextDecision();
-        logger.info("JSON Decision: "+decider.getDecision());
+        String decision = decider.getNextStep().toString();
+        logger.info("Decision: " + decision);
 
-        return decider.getDecision();
+        return decision;
     }
 
     @Override

@@ -11,16 +11,16 @@ import org.json.JSONTokener;
 
 
 public class Drone {
-    private String direction;
+    private Direction direction;
     private int battery;
 
     public void initializeDrone(JSONObject info){
-        this.direction = info.getString("heading");
+        this.direction = Direction.parseDirection(info.getString("heading"));
         this.battery = info.getInt("budget");
 
     }
 
-    public String getDirection(){
+    public Direction getDirection(){
         return this.direction;
 
     }
@@ -43,7 +43,7 @@ public class Drone {
         return this.battery;
     }
 
-    public void setDirection(String newDirection){
+    public void setDirection(Direction newDirection){
         this.direction = newDirection;
 
     }

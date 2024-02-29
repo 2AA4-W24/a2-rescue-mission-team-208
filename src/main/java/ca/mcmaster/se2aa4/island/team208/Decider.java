@@ -6,49 +6,71 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Decider {
 
     private final Logger logger = LogManager.getLogger();
-    private JSONObject decision = new JSONObject();
-    private ArrayList<JSONObject> previousDecisions = new ArrayList<>();
 
-    private int count = 0;
+    private final List<JSONObject> decisionQueue;
+    private final List<JSONObject> results;
 
-    public Decider() {
+    private Drone drone;
+    private RescueAreaMap map;
+    private int currentStep = 0; //next step that needs to be executed
+
+    public Decider(Drone drone, RescueAreaMap map) {
+        this.results = new ArrayList<>();
+        this.decisionQueue = new ArrayList<>();
+        this.drone=drone;
+        this.map=map;
+    }
+
+    public JSONObject getNextStep(){
+        JSONObject step;
+        if (currentStep >= decisionQueue.size()) {
+            this.setNextDecision();
+        }
+        step=decisionQueue.get(currentStep);
+        currentStep++;
+        logger.info("** Decision: {}", step.toString());
+        return step;
+    }
+
+    public void addResult(JSONObject result, int step){
+        results.add(result);
+    }
+
+    public int getCurrentStep() {
+        return currentStep;
     }
 
     //function needs to eventually reach "STOP" and stay there
-    public void setNextDecision(){
-
+    //function may generate more than one step
+    private void setNextDecision(){
         JSONObject decision = new JSONObject();
-        double random = Math.random();
-        boolean stopped;
 
-        if(!previousDecisions.get(count-1).equals(new JSONObject())){
-            stopped = previousDecisions.get(count-1).get("action").equals("stop");
-        }else{
-            stopped=false;
-        }
-
-
-        //decision generation logic
+        boolean stopped=false;
+        try{
+            if(!decisionQueue.get(currentStep -1).equals(new JSONObject())){
+                stopped = decisionQueue.get(currentStep -1).get("action").equals("stop");
+            }
+        }catch(IndexOutOfBoundsException | JSONException ignored){}//temporary fix
         if (!stopped) {
+
+            //decision generation logic
+            double random = Math.random();
+
             if (random > .5) {
                 this.decide(Action.FLY);
             } else if (random > .2) {
                 this.decide(Action.SCAN);
             } else {
-                this.decide(Action.STOP);
+                this.decide(Action.ECHO_FRONT);
             }
         } else {
             this.decide(Action.STOP);
         }
-
-        previousDecisions.add(this.decision);
-        count++;
-        this.decision=decision;
 
     }
     /*
@@ -58,32 +80,51 @@ public class Decider {
         decision.put("action", this.decision); // we STOP the exploration immediately
 
         if(curr_decision == "FLY"){
-            count+=1;
+            currentStep+=1;
         }
-        decision.put("count",count);
-        logger.info("action times: "+count);
+        decision.put("currentStep",currentStep);
+        logger.info("action times: "+currentStep);
         logger.info("** Decision: {}", decision.toString());
 
     }
 
      */
+
+    /*
     public void decide(Action action, JSONObject additional){
-        decision = new JSONObject();
-        decision.put("action", action.toString());
+        JSONObject step = new JSONObject();
+        step.put("action", action.toString());
 
         for(String keys: additional.keySet()){
-            decision.put(keys,additional.get(keys));
+            step.put(keys,additional.get(keys));
         }
 
-        logger.info("** Decision: {}", decision.toString());
+        //logger.info("** Decision: {}", step.toString());
+        decisionQueue.add(step);
     }
 
+     */
     public void decide(Action action){
-        decision = new JSONObject();
-        decision.put("action", action.toString());
+        JSONObject step = new JSONObject();
 
+        step.put("action", action.toString());
+        switch(action){
+            case TURN_LEFT,ECHO_LEFT -> {
+                step.put("parameters", new JSONObject("heading",Direction.getLeft(drone.getDirection()).toString()));
+            }
+            case TURN_RIGHT,ECHO_RIGHT -> {
+                step.put("parameters", Direction.getRight(drone.getDirection()).toString());
+            }
+            case ECHO_FRONT -> {
+                step.put("parameters", drone.getDirection().toString());
+            }
 
-        logger.info("** Decision: {}", decision.toString());
+            default->{
+
+            }
+        }
+        //logger.info("** Decision: {}", step.toString());
+        decisionQueue.add(step);
     }
 
     /*
@@ -98,8 +139,4 @@ public class Decider {
     }
 
      */
-
-    public String getDecision() {
-        return decision.toString();
-    }
 }
