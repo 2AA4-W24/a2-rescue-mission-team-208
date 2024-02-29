@@ -23,6 +23,7 @@ public class Decider {
         this.decisionQueue = new ArrayList<>();
         this.drone=drone;
         this.map=map;
+
         this.decisionQueue.add(Action.ECHO_FRONT);
     }
 
@@ -42,19 +43,29 @@ public class Decider {
     }
 
     //function needs to eventually reach "STOP" and stay there
-    //function may generate more than one step
+    //function may generate more than one step with each call
     private void setNextDecision(){
-        int flyAmount = 1;
-        try{
-            Results lastResult = results.get(currentStep-1);
-            if(lastResult.getResponse().get("found").equals("OUT_OF_BOUNDS"))
-                flyAmount=lastResult.getResponse().getInt("range")/3;
-        }catch(Exception ignored){}
+        int flyAmount = -1;
 
+        if(currentStep>0) {
+            JSONObject lastResult = results.get(currentStep - 1).getResponse().getJSONObject("extras");
+            if (lastResult.get("found").equals("OUT_OF_RANGE")) {
+                flyAmount = lastResult.getInt("range");
+                logger.info("Fly range is "+flyAmount);
+                logger.info("Decisions: "+decisionQueue.toString());
+            }
+        }
         for(int i=0; i<flyAmount;i++){
             this.decisionQueue.add(Action.FLY);
         }
-        this.decisionQueue.add(Action.ECHO_FRONT);
+        if(flyAmount==0){
+            this.decisionQueue.add(Action.SCAN);
+            this.decisionQueue.add(Action.STOP);
+        }
+        else {
+            this.decisionQueue.add(Action.ECHO_FRONT);
+        }
+
 
         /*
         try{
