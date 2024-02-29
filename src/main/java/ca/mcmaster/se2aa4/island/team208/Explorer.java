@@ -107,6 +107,9 @@ public class Explorer implements IExplorerRaid {
     @Override
     public void acknowledgeResults(String s) {
         results = new Results(s);
+
+        this.decider.addResult(results);
+
         JSONObject Extras = results.getExtraInfo();
         if (Extras != null || Extras.getString("found").equals("OUT_OF_RANGE")) {
             // Assuming your echo result is in the same format as the action

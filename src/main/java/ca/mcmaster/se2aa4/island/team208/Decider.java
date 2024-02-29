@@ -3,7 +3,6 @@ package ca.mcmaster.se2aa4.island.team208;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -12,8 +11,8 @@ public class Decider {
 
     private final Logger logger = LogManager.getLogger();
 
-    private final List<JSONObject> decisionQueue;
-    private final List<JSONObject> results;
+    private final List<Action> decisionQueue;
+    private final List<Results> results;
 
     private Drone drone;
     private RescueAreaMap map;
@@ -24,6 +23,7 @@ public class Decider {
         this.decisionQueue = new ArrayList<>();
         this.drone=drone;
         this.map=map;
+        this.decisionQueue.add(Action.ECHO_FRONT);
     }
 
     public JSONObject getNextStep(){
@@ -31,29 +31,35 @@ public class Decider {
         if (currentStep >= decisionQueue.size()) {
             this.setNextDecision();
         }
-        step=decisionQueue.get(currentStep);
+        step=this.translateDecision(decisionQueue.get(currentStep));
         currentStep++;
         logger.info("** Decision: {}", step.toString());
         return step;
     }
 
-    public void addResult(JSONObject result, int step){
+    public void addResult(Results result){
         results.add(result);
-    }
-
-    public int getCurrentStep() {
-        return currentStep;
     }
 
     //function needs to eventually reach "STOP" and stay there
     //function may generate more than one step
     private void setNextDecision(){
-        JSONObject decision = new JSONObject();
+        int flyAmount = 1;
+        try{
+            Results lastResult = results.get(currentStep-1);
+            if(lastResult.getResponse().get("found").equals("OUT_OF_BOUNDS"))
+                flyAmount=lastResult.getResponse().getInt("range")/3;
+        }catch(Exception ignored){}
 
-        boolean stopped=false;
+        for(int i=0; i<flyAmount;i++){
+            this.decisionQueue.add(Action.FLY);
+        }
+        this.decisionQueue.add(Action.ECHO_FRONT);
+
+        /*
         try{
             if(!decisionQueue.get(currentStep -1).equals(new JSONObject())){
-                stopped = decisionQueue.get(currentStep -1).get("action").equals("stop");
+                stopped = this.translateDecision(decisionQueue.get(currentStep -1)).get("action").equals("stop");
             }
         }catch(IndexOutOfBoundsException | JSONException ignored){}//temporary fix
         if (!stopped) {
@@ -62,16 +68,18 @@ public class Decider {
             double random = Math.random();
 
             if (random > .5) {
-                this.decide(Action.FLY);
+                this.decisionQueue.add(Action.FLY);
             } else if (random > .2) {
-                this.decide(Action.SCAN);
+                this.decisionQueue.add(Action.SCAN);
             } else {
-                this.decide(Action.ECHO_FRONT);
+                this.decisionQueue.add(Action.ECHO_FRONT);
             }
         } else {
-            this.decide(Action.STOP);
+            this.decisionQueue.add(Action.STOP);
         }
 
+
+         */
     }
     /*
     public void decide(String curr_decision) {
@@ -104,19 +112,25 @@ public class Decider {
     }
 
      */
-    public void decide(Action action){
+
+    //this is done when decision is about to be performed
+    public JSONObject translateDecision(Action action){
         JSONObject step = new JSONObject();
 
         step.put("action", action.toString());
         switch(action){
             case TURN_LEFT,ECHO_LEFT -> {
-                step.put("parameters", new JSONObject("heading",Direction.getLeft(drone.getDirection()).toString()));
+                step.put("parameters", new JSONObject().put("direction",Direction.getLeft(drone.getDirection()).toString()));
+
+                //updating drone should be in acknowledgingResults
+                this.drone.setDirection(Direction.getLeft(drone.getDirection()));
             }
             case TURN_RIGHT,ECHO_RIGHT -> {
-                step.put("parameters", Direction.getRight(drone.getDirection()).toString());
+                step.put("parameters", new JSONObject().put("direction",Direction.getRight(drone.getDirection()).toString()));
+                this.drone.setDirection(Direction.getRight(drone.getDirection()));
             }
             case ECHO_FRONT -> {
-                step.put("parameters", drone.getDirection().toString());
+                step.put("parameters", new JSONObject().put("direction",drone.getDirection().toString()));
             }
 
             default->{
@@ -124,7 +138,7 @@ public class Decider {
             }
         }
         //logger.info("** Decision: {}", step.toString());
-        decisionQueue.add(step);
+        return step;
     }
 
     /*
