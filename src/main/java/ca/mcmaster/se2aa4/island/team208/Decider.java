@@ -41,7 +41,7 @@ public class Decider {
     public void addResult(Results result){
         results.add(result);
     }
-
+    
     //function needs to eventually reach "STOP" and stay there
     //function may generate more than one step with each call
     private void setNextDecision(){
@@ -57,6 +57,7 @@ public class Decider {
         }
         for(int i=0; i<flyAmount;i++){
             this.decisionQueue.add(Action.FLY);
+            this.decisionQueue.add(Action.SCAN);
         }
         if(flyAmount==0){
             this.decisionQueue.add(Action.SCAN);
