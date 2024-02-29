@@ -41,7 +41,7 @@ public class Decider {
     public void addResult(Results result){
         results.add(result);
     }
-    
+
     //function needs to eventually reach "STOP" and stay there
     //function may generate more than one step with each call
     private void setNextDecision(){
