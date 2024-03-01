@@ -14,7 +14,7 @@ public class Decider {
     private final List<Results> results;
     private Drone drone;
     private Radar radar;
-    private int currentStep = 0; //next step that needs to be executed
+    private int currentStep; //next step that needs to be executed
 
     public Decider(Drone drone, Radar radar) {
         this.results = new ArrayList<>();
@@ -30,7 +30,7 @@ public class Decider {
         if (this.currentStep >= decisionQueue.size()) {
             this.setNextDecision();
         }
-        step=this.translateDecision(decisionQueue.get(this.currentStep));
+        step=this.generateDecision(decisionQueue.get(this.currentStep));
         this.currentStep++;
         logger.info("** Decision: {}", step.toString());
         return step;
@@ -99,7 +99,7 @@ public class Decider {
 
 
     //this is done when decision is about to be performed
-    public JSONObject translateDecision(Action action){
+    public JSONObject generateDecision(Action action){
         JSONObject step = new JSONObject();
 
         step.put("action", action.toString());
