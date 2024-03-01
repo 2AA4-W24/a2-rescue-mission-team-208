@@ -22,7 +22,6 @@ public class Results {
         response_str = response.toString(2);
         cost = response.getInt("cost");
         status = response.getString("status");
-//        action = response.getString("action"); Problem with this line
         extra_info = response.getJSONObject("extras");
     }
     public JSONObject getResponse(){
@@ -39,10 +38,6 @@ public class Results {
 
     public String getStatus() {
         return status;
-    }
-
-    public String getAction(){
-        return action;
     }
 
     public JSONObject getExtraInfo() {

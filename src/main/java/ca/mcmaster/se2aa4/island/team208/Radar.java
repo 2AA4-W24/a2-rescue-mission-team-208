@@ -9,24 +9,24 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 
-public class RescueAreaMap{
-    private int maxDistanceBeforeMIA;
+public class Radar{
+    private int range;
+    private String found;
     public void updateFromEchoResult(JSONObject echoResult) {
         // Interpret echo results and update the map accordingly
         try{
-            int range = echoResult.getJSONObject("extras").getInt("range");
-            String found = echoResult.getJSONObject("extras").getString("found");
-
-            if ("OUT_OF_RANGE".equals(found)) {
-                this.maxDistanceBeforeMIA = range;
-            }
+            this.range = echoResult.getJSONObject("extras").getInt("range");
+            this.found = echoResult.getJSONObject("extras").getString("found");
         }catch (JSONException ignored){}//temporary fix
-
         // ... handle other cases
     }
 
-    public int getMaxDistanceBeforeMIA() {
-        return maxDistanceBeforeMIA;
+    public int getRange() {
+        return this.range;
+    }
+
+    public String getFound() {
+        return this.found;
     }
 
 }

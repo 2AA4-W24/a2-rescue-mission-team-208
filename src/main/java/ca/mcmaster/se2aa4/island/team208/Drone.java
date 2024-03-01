@@ -24,20 +24,6 @@ public class Drone {
         return this.direction;
 
     }
-    /*
-    public String echo(String direction) throws Exception {
-        Direction d = Direction.valueOf(direction.toUpperCase());
-
-        //echo in direction behind the drone
-        if(d.equals(Directions.getOpposite(Direction.valueOf(this.direction.toUpperCase())))){
-            throw new Exception("Drone MIA");
-        }
-
-
-        return "";
-    }
-
-     */
 
     public int getBattery(){
         return this.battery;
@@ -52,7 +38,20 @@ public class Drone {
         this.battery = newBattery;
     }
     
+/*
+    public String echo(String direction) throws Exception {
+        Direction d = Direction.valueOf(direction.toUpperCase());
 
+        //echo in direction behind the drone
+        if(d.equals(Directions.getOpposite(Direction.valueOf(this.direction.toUpperCase())))){
+            throw new Exception("Drone MIA");
+        }
+
+
+        return "";
+    }
+
+     */
 
 
 

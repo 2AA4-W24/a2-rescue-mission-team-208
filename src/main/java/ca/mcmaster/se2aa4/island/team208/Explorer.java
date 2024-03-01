@@ -14,12 +14,12 @@ public class Explorer implements IExplorerRaid {
     private Decider decider;
     private Results results;
     private Drone drone;
-    private RescueAreaMap areaMap;
+    private Radar radar;
 
     public Explorer(){
-        this.areaMap = new RescueAreaMap();
+        this.radar = new Radar();
         this.drone = new Drone();
-        this.decider = new Decider(this.drone, this.areaMap);
+        this.decider = new Decider(this.drone, this.radar);
     }
 
     @Override
@@ -107,14 +107,12 @@ public class Explorer implements IExplorerRaid {
     @Override
     public void acknowledgeResults(String s) {
         results = new Results(s);
-
         this.decider.addResult(results);
-
-        JSONObject Extras = results.getExtraInfo();
-        if (Extras != null || Extras.getString("found").equals("OUT_OF_RANGE")) {
-            // Assuming your echo result is in the same format as the action
-            areaMap.updateFromEchoResult(results.getResponse());
-        }
+//        JSONObject Extras = results.getExtraInfo();
+        radar.updateFromEchoResult(results.getResponse());
+//        if (Extras != null || Extras.getString("found").equals("OUT_OF_RANGE")) {
+//            // Assuming your echo result is in the same format as the action
+//        }
         results.printResults();
     }
 
