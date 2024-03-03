@@ -4,7 +4,7 @@ public enum Direction {
     //maintain order N->E->S->W, next ordinal is to the right of previous
     N,E,S,W;
     public static Direction getLeft(Direction d){
-        return Direction.values()[(d.ordinal()-1)%4];
+        return Direction.values()[(d.ordinal()+3)%4];
     }
     public static Direction getOpposite(Direction d){
         return Direction.values()[(d.ordinal()+2)%4];

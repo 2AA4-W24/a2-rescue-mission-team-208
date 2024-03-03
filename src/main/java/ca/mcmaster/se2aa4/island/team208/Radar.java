@@ -6,17 +6,20 @@ import org.apache.logging.log4j.Logger;
 import eu.ace_design.island.bot.IExplorerRaid;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import org.json.JSONTokener;
 
 
 public class Radar{
     private int range;
     private String found;
+    private JSONArray creeks;
     public void updateFromEchoResult(JSONObject echoResult) {
         // Interpret echo results and update the map accordingly
         try{
             this.range = echoResult.getJSONObject("extras").getInt("range");
             this.found = echoResult.getJSONObject("extras").getString("found");
+            this.creeks = echoResult.getJSONObject("extras").getJSONArray("creeks");
         }catch (JSONException ignored){}//temporary fix
         // ... handle other cases
     }
@@ -27,6 +30,9 @@ public class Radar{
 
     public String getFound() {
         return this.found;
+    }
+    public JSONArray getCreeks(){
+        return this.creeks;
     }
 
 }
