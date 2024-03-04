@@ -13,14 +13,14 @@ public class Decider {
     private final List<Action> decisionQueue;
     private final List<Results> results;
     private Drone drone;
-    private Radar radar;
+    private RadarInterpreter radarInterpreter;
     private int currentStep; //next step that needs to be executed
 
-    public Decider(Drone drone, Radar radar) {
+    public Decider(Drone drone) {
         this.results = new ArrayList<>();
         this.decisionQueue = new ArrayList<>();
         this.drone=drone;
-        this.radar=radar;
+        this.radarInterpreter = new RadarInterpreter();
         this.currentStep=0;
         this.decisionQueue.add(Action.ECHO_FRONT);
     }
@@ -47,12 +47,12 @@ public class Decider {
         if (this.currentStep - 1 == 0 || this.decisionQueue.get(this.currentStep - 1) == Action.FLY) {
             this.decisionQueue.add(Action.ECHO_RIGHT);
         } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_RIGHT) {
-            if (this.radar.getFound().equals("GROUND")) {
+            if (this.radarInterpreter.getFound().equals("GROUND")) {
                 this.decisionQueue.add(Action.TURN_RIGHT);
             }
             this.decisionQueue.add(Action.ECHO_FRONT);
         } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_FRONT){
-            if (this.radar.getRange() == 0) {
+            if (this.radarInterpreter.getRange() == 0) {
                 this.decisionQueue.add(Action.STOP);
             } else {
                 this.decisionQueue.add(Action.FLY);
@@ -99,7 +99,7 @@ public class Decider {
 
 
     //this is done when decision is about to be performed
-    public JSONObject generateDecision(Action action){
+    private JSONObject generateDecision(Action action){
         JSONObject step = new JSONObject();
 
         step.put("action", action.toString());

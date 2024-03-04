@@ -1,12 +1,9 @@
 package ca.mcmaster.se2aa4.island.team208;
 
-import java.io.StringReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.ace_design.island.bot.IExplorerRaid;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
 public class Explorer implements IExplorerRaid {
 
@@ -14,12 +11,10 @@ public class Explorer implements IExplorerRaid {
     private Decider decider;
     private Results results;
     private Drone drone;
-    private Radar radar;
 
     public Explorer(){
-        this.radar = new Radar();
         this.drone = new Drone();
-        this.decider = new Decider(this.drone, this.radar);
+        this.decider = new Decider(this.drone);
     }
 
     @Override
@@ -108,8 +103,8 @@ public class Explorer implements IExplorerRaid {
     public void acknowledgeResults(String s) {
         results = new Results(s);
         this.decider.addResult(results);
+
 //        JSONObject Extras = results.getExtraInfo();
-        radar.updateFromEchoResult(results.getResponse());
 //        if (Extras != null || Extras.getString("found").equals("OUT_OF_RANGE")) {
 //            // Assuming your echo result is in the same format as the action
 //        }
