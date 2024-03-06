@@ -3,6 +3,7 @@ package ca.mcmaster.se2aa4.island.team208;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -11,112 +12,121 @@ public class Decider {
 
     private final Logger logger = LogManager.getLogger();
     private final List<Action> decisionQueue;
-    private final List<Results> results;
+    private final List<Result> results;
     private Drone drone;
-    private Radar radar;
+    private RadarInterpreter radarInterpreter;
+    private ScanInterpreter scanInterpreter;
     private int currentStep; //next step that needs to be executed
+    private int searchStage = 0;
 
-    public Decider(Drone drone, Radar radar) {
+    public Decider(Drone drone) {
         this.results = new ArrayList<>();
         this.decisionQueue = new ArrayList<>();
         this.drone=drone;
-        this.radar=radar;
+        this.radarInterpreter = new RadarInterpreter();
+        this.scanInterpreter = new ScanInterpreter();
         this.currentStep=0;
         this.decisionQueue.add(Action.ECHO_FRONT);
     }
 
-    public JSONObject getNextStep(){
+
+    public JSONObject getNextStep(Result lastResult){
+
         JSONObject step;
+        if(this.currentStep>0)this.processResults(lastResult);
+
+
         if (this.currentStep >= decisionQueue.size()) {
             this.setNextDecision();
         }
+
         step=this.generateDecision(decisionQueue.get(this.currentStep));
         this.currentStep++;
         logger.info("** Decision: {}", step.toString());
         return step;
     }
 
-    public void addResult(Results result){
-        this.results.add(result);
+    private void processResults(Result lastResult) {
+        this.results.add(lastResult);
+        this.drone.processResults(decisionQueue.get(currentStep-1),lastResult);
+
+        switch(this.decisionQueue.get(currentStep-1)){
+            case ECHO_FRONT,ECHO_LEFT,ECHO_RIGHT-> this.radarInterpreter.saveEchoResult(this.results.get(currentStep-1));
+            case SCAN -> this.scanInterpreter.saveScan(results.get(currentStep-1));
+        }
+
     }
 
-    //function needs to eventually reach "STOP" and stay there
+
+    //function needs to eventually reach "STOP"
     //function may generate more than one step with each call
     private void setNextDecision(){
-        this.decisionQueue.add(Action.SCAN);
-        if (this.currentStep - 1 == 0 || this.decisionQueue.get(this.currentStep - 1) == Action.FLY) {
-            this.decisionQueue.add(Action.ECHO_RIGHT);
-        } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_RIGHT) {
-            if (this.radar.getFound().equals("GROUND")) {
-                this.decisionQueue.add(Action.TURN_RIGHT);
-            }
-            this.decisionQueue.add(Action.ECHO_FRONT);
-        } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_FRONT){
-            if (this.radar.getRange() == 0) {
-                this.decisionQueue.add(Action.STOP);
-            } else {
-                this.decisionQueue.add(Action.FLY);
-            }
-        }
-//        int flyAmount = (currentStep > 0) ? this.radar.getMaxDistanceBeforeMIA() : -1;
-//
-//        for(int i=0; i<flyAmount;i++){
-//            this.decisionQueue.add(Action.FLY);
-//            this.decisionQueue.add(Action.SCAN);
-//        }
-//        if(flyAmount==0){
-//            this.decisionQueue.add(Action.SCAN);
-//            this.decisionQueue.add(Action.STOP);
-//        } else {
-//            this.decisionQueue.add(Action.ECHO_FRONT);
-//        }
-
-        /*
-        try{
-            if(!decisionQueue.get(currentStep -1).equals(new JSONObject())){
-                stopped = this.translateDecision(decisionQueue.get(currentStep -1)).get("action").equals("stop");
-            }
-        }catch(IndexOutOfBoundsException | JSONException ignored){}//temporary fix
-        if (!stopped) {
-
-            //decision generation logic
-            double random = Math.random();
-
-            if (random > .5) {
-                this.decisionQueue.add(Action.FLY);
-            } else if (random > .2) {
+        switch(searchStage){
+            case 0 ->{
                 this.decisionQueue.add(Action.SCAN);
-            } else {
-                this.decisionQueue.add(Action.ECHO_FRONT);
+                if (this.currentStep - 1 == 0 || this.decisionQueue.get(this.currentStep - 1) == Action.FLY) {
+                    this.decisionQueue.add(Action.ECHO_RIGHT);
+                } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_RIGHT) {
+                    if (this.radarInterpreter.getFound().equals("GROUND")) {
+                        this.decisionQueue.add(Action.TURN_RIGHT);
+                        this.decisionQueue.add(Action.ECHO_FRONT);
+                    }
+                    else{
+                        this.decisionQueue.add(Action.FLY);
+                    }
+
+                } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_FRONT){
+                    this.decisionQueue.addAll(ActionBuilder.actionsNTimes(
+                            new Action[]{Action.FLY,Action.SCAN},
+                            this.radarInterpreter.getRange()));
+                    searchStage++;
+                }
             }
-        } else {
-            this.decisionQueue.add(Action.STOP);
+            case 1 ->{
+                //Keep scanning island
+                if(this.decisionQueue.get(this.currentStep-1) == Action.SCAN){
+                    JSONArray biomes = this.scanInterpreter.getBiomes();
+                    JSONArray creeks = this.scanInterpreter.getCreeks();
+                    if(!creeks.isEmpty()){
+                        this.decisionQueue.add(Action.STOP);
+                        logger.info("A creek has been found.");
+                    }
+                    else if(biomes.length()==1 && biomes.getString(0).equals("OCEAN")){
+                        switch(this.drone.getDirection()){
+                            case S -> {
+                                this.decisionQueue.add(Action.TURN_LEFT);
+                                this.decisionQueue.add(Action.TURN_LEFT);
+                            }
+                            case N -> {
+                                this.decisionQueue.add(Action.TURN_RIGHT);
+                                this.decisionQueue.add(Action.TURN_RIGHT);
+                            }
+                        }
+                    }
+                    else{
+                        this.decisionQueue.add(Action.FLY);
+                    }
+                }
+                else{
+                    this.decisionQueue.add(Action.SCAN);
+                }
+            }
         }
 
-
-         */
     }
 
 
     //this is done when decision is about to be performed
-    public JSONObject generateDecision(Action action){
+    private JSONObject generateDecision(Action action){
         JSONObject step = new JSONObject();
 
         step.put("action", action.toString());
         switch(action){
-            case TURN_LEFT -> {
+            case TURN_LEFT, ECHO_LEFT -> {
                 step.put("parameters", new JSONObject().put("direction",Direction.getLeft(drone.getDirection()).toString()));
-                //updating drone should be in acknowledgingResults
-                this.drone.setDirection(Direction.getLeft(drone.getDirection()));
+
             }
-            case TURN_RIGHT -> {
-                step.put("parameters", new JSONObject().put("direction",Direction.getRight(drone.getDirection()).toString()));
-                this.drone.setDirection(Direction.getRight(drone.getDirection()));
-            }
-            case ECHO_LEFT -> {
-                step.put("parameters", new JSONObject().put("direction",Direction.getLeft(drone.getDirection()).toString()));
-            }
-            case ECHO_RIGHT -> {
+            case TURN_RIGHT, ECHO_RIGHT -> {
                 step.put("parameters", new JSONObject().put("direction",Direction.getRight(drone.getDirection()).toString()));
             }
             case ECHO_FRONT -> {
@@ -127,52 +137,6 @@ public class Decider {
 
             }
         }
-        //logger.info("** Decision: {}", step.toString());
         return step;
     }
-
-
-/*
-    public void decide(String curr_decision) {
-
-        this.decision = curr_decision;
-        decision.put("action", this.decision); // we STOP the exploration immediately
-
-        if(curr_decision == "FLY"){
-            currentStep+=1;
-        }
-        decision.put("currentStep",currentStep);
-        logger.info("action times: "+currentStep);
-        logger.info("** Decision: {}", decision.toString());
-
-    }
-
-     */
-
-    /*
-    public void decide(Action action, JSONObject additional){
-        JSONObject step = new JSONObject();
-        step.put("action", action.toString());
-
-        for(String keys: additional.keySet()){
-            step.put(keys,additional.get(keys));
-        }
-
-        //logger.info("** Decision: {}", step.toString());
-        decisionQueue.add(step);
-    }
-
-     */
-    /*
-    public void sendEcho(String direction){
-        this.decision = "echo";
-        JSONObject parameter = new JSONObject();
-        parameter.put("direction", direction);
-        decision.put("action", this.decision);
-        decision.put("parameters", parameter);
-        logger.info("Decision: {}", decision.toString());
-
-    }
-
-     */
 }
