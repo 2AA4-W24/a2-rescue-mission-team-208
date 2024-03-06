@@ -9,12 +9,13 @@ public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
     private Decider decider;
-    private Results results;
+    private Result lastResult;
     private Drone drone;
 
     public Explorer(){
         this.drone = new Drone();
         this.decider = new Decider(this.drone);
+        this.lastResult = null;
     }
 
     @Override
@@ -26,74 +27,7 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String takeDecision(){
-//        if (decider.getDecision() == "FLY") {
-//            decider.decide(Action.STOP);
-//        } else {
-//            decider.decide(Action.FLY);
-//        }
-        /*
-        int maxDistance = areaMap.getMaxDistanceBeforeMIA();
-        String[] echoList = echoList(drone);
-
-        switch(this.count){
-            case 0 :
-            decider.sendEcho(echoList[0]);
-            break;
-            case 1 :
-            logger.info("For direction: "+echoList[this.count-1]+"The drone can FLY " + maxDistance + " units forward before going MIA for falling out of the radio range.");
-            decider.sendEcho(echoList[1]);
-            break;
-            case 2 :
-            logger.info("For direction: "+echoList[this.count-1]+"The drone can FLY " + maxDistance + " units forward before going MIA for falling out of the radio range.");
-            decider.sendEcho(echoList[2]);
-            break;
-            case 3 :
-            logger.info("For direction: "+echoList[this.count-1]+"The drone can FLY " + maxDistance + " units forward before going MIA for falling out of the radio range.");
-            decider.decide("STOP");
-            break;
-
-        }
-        count++;
-
-
-         */
-        /*
-        //Fly till the end
-        if(count==-1){
-            decider.sendEcho(drone.getDirection());
-            count++;
-        }
-        else if(count%3==0){
-            if(flyCount<areaMap.getMaxDistanceBeforeMIA()){
-                decider.decide(Action.FLY,10,new JSONObject().put("direction",drone.getDirection()));
-                flyCount+=10;
-            }
-            else{
-                decider.decide(Action.STOP,0,new JSONObject().put("direction",drone.getDirection()));
-            }
-            count++;
-        }
-        else if(count%3==1){
-            if(flyCount<areaMap.getMaxDistanceBeforeMIA()){
-                decider.decide(Action.SCAN,0,null);
-
-            }
-            else{
-                decider.decide(Action.STOP,0,new JSONObject().put("direction",drone.getDirection()));
-            }
-            count++;
-        }
-        else{
-            if(flyCount>=areaMap.getMaxDistanceBeforeMIA()){
-                decider.decide(Action.STOP,0,new JSONObject().put("direction",drone.getDirection()));
-            }
-            count++;
-
-        }
-
-         */
-
-        String decision = decider.getNextStep().toString();
+        String decision = decider.getNextStep(this.lastResult).toString();
         logger.info("Decision: " + decision);
 
         return decision;
@@ -101,14 +35,8 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public void acknowledgeResults(String s) {
-        results = new Results(s);
-        this.decider.addResult(results);
-
-//        JSONObject Extras = results.getExtraInfo();
-//        if (Extras != null || Extras.getString("found").equals("OUT_OF_RANGE")) {
-//            // Assuming your echo result is in the same format as the action
-//        }
-        results.printResults();
+        this.lastResult = new Result(s);
+        this.lastResult.printResults();
     }
 
     @Override

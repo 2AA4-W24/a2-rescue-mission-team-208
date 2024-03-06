@@ -5,25 +5,22 @@ import org.json.JSONObject;
 
 
 public class RadarInterpreter {
-    private JSONObject lastEcho;
-    private int cost;
+    private Result lastEcho;
     private int range;
     private String found;
     private Direction lastEchoDirection;
 
     public RadarInterpreter(){
-        this.lastEcho = new JSONObject();
-        this.cost=0;
+        this.lastEcho = null;
         this.range=-1; //-1 symbolizes no echo being performed
         this.found="";
     }
-    public void saveEchoResult(JSONObject echoResult) {
+    public void saveEchoResult(Result echoResult) {
         this.lastEcho = echoResult;
 
         // Interpret echo results and update the map accordingly
         try{
-            JSONObject extras=echoResult.getJSONObject("extras");
-            this.cost = echoResult.getInt("cost");
+            JSONObject extras=echoResult.getExtraInfo();
             this.range = extras.getInt("range");
             this.found = extras.getString("found");
         }catch (JSONException e){
@@ -40,14 +37,6 @@ public class RadarInterpreter {
         }
     }
 
-    public int getCost() {
-        if(this.cost==0){
-            throw new NullPointerException("No Echo has been saved yet.");
-        }
-        else{
-            return this.cost;
-        }
-    }
 
     public String getFound() {
         if(this.found.isEmpty()){

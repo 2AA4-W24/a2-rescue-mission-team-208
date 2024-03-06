@@ -8,7 +8,7 @@ public class DeciderTest {
 
     @BeforeEach
     public void init(){
-        decider = new Decider(new Drone(), new RadarInterpreter());
+        decider = new Decider(new Drone());
     }
 
     @Test

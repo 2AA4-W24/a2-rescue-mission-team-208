@@ -7,17 +7,17 @@ import org.json.JSONTokener;
 
 import java.io.StringReader;
 
-public class Results {
+public class Result {
 
     private final Logger logger = LogManager.getLogger();
     private JSONObject response;
     private String response_str;
     private Integer cost;
     private String status;
-    private String action;
     private JSONObject extra_info;
 
-    public Results(String s) {
+
+    public Result(String s) {
         response = new JSONObject(new JSONTokener(new StringReader(s)));
         response_str = response.toString(2);
         cost = response.getInt("cost");
