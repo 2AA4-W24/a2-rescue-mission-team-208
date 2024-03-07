@@ -1,12 +1,12 @@
 package ca.mcmaster.se2aa4.island.team208;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Decider {
 
@@ -56,7 +56,6 @@ public class Decider {
         }
 
     }
-
 
     //function needs to eventually reach "STOP"
     //function may generate more than one step with each call

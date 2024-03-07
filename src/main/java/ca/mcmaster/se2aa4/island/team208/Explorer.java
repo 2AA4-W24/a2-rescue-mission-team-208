@@ -44,30 +44,4 @@ public class Explorer implements IExplorerRaid {
         return "no creek found";
     }
 
-    //echoList method returns a string array including 3 directions which can be echoed due to the facing direction.
-    /*
-    public String[] echoList(Drone drone){
-        String dir = drone.getDirection();
-        String[] result = new String[3];
-        switch(dir){
-            case "E":
-            result = new String[]{"N", "S", "E"};
-            break;
-            case "W":
-            result = new String[]{"W","S","N"};
-            break;
-            case "N":
-            result = new String[]{"E","W","N"};
-            break;
-            case "S":
-            result = new String[]{"E","S","W"};
-            break;
-            
-
-        }
-        return result;
-    }
-
-     */
-
 }

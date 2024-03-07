@@ -6,7 +6,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import javax.naming.NameNotFoundException;
 import java.io.StringReader;
 
 public class Configuration {

@@ -4,8 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.*;
-
 public class ScanInterpreter {
     private Result lastScan;
     private JSONArray creeks;

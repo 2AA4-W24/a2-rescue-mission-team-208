@@ -3,7 +3,6 @@ package ca.mcmaster.se2aa4.island.team208;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class RadarInterpreter {
     private Result lastEcho;
     private int range;
