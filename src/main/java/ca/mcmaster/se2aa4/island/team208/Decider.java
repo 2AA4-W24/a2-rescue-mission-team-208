@@ -89,13 +89,24 @@ public class Decider {
             case 1 ->{ // Find the first creek
                 if (this.decisionQueue.get(this.currentStep - 1) == Action.SCAN) {
                     JSONArray creeks = this.scanInterpreter.getCreeks();
+                    JSONArray sites = this.scanInterpreter.getSites();
                     this.decisionQueue.add(Action.ECHO_FRONT);
                     if(!creeks.isEmpty()){
-                        this.decisionQueue.add(Action.STOP);
+                        this.map.addCreek(new Creek(creeks.get(0).toString()));
+                        logger.info("A creek has been found.");
+                    }
+                    if(!sites.isEmpty()){
+                        this.map.setSite(new Site(sites.get(0).toString()));
                         logger.info("A creek has been found.");
                     }
                 } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_FRONT) {
-                    if (this.radarInterpreter.getFound().equals("GROUND")) {
+                    if ((this.decisionQueue.get(this.currentStep - 3) == Action.TURN_LEFT
+                            || this.decisionQueue.get(this.currentStep - 3) == Action.TURN_RIGHT)
+                            && this.radarInterpreter.getFound().equals("OUT_OF_RANGE")) {
+                        this.decisionQueue.add(Action.STOP);
+                        logger.info("CREEKS: " + this.map.getCreeks());
+                        logger.info("SITE: " + this.map.getSite());
+                    } else if (this.radarInterpreter.getFound().equals("GROUND")) {
                         this.decisionQueue.add(Action.FLY);
                         this.decisionQueue.add(Action.SCAN);
                     } else {
