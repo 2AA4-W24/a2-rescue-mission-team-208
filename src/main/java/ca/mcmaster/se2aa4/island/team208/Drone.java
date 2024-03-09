@@ -5,11 +5,20 @@ import org.json.JSONObject;
 public class Drone {
     private Direction direction;
     private int battery;
+    private Position position;
 
-    public void initializeDrone(JSONObject info){
+    public void initializeDrone(JSONObject info, double x, double y){
         this.direction = Direction.parseDirection(info.getString("heading"));
         this.battery = info.getInt("budget");
+        this.position = new Position(x, y);
+    }
 
+    public double getX() {
+        return this.position.getX();
+    }
+
+    public double getY() {
+        return this.position.getY();
     }
 
     public Direction getDirection(){

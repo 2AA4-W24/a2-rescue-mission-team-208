@@ -21,7 +21,7 @@ public class Explorer implements IExplorerRaid {
     @Override
     public void initialize(String s) {
         Configuration config = new Configuration(s);
-        drone.initializeDrone(config.getInfo());
+        drone.initializeDrone(config.getInfo(), 0, 0);
         config.printStatus();
     }
 
@@ -29,7 +29,6 @@ public class Explorer implements IExplorerRaid {
     public String takeDecision(){
         String decision = decider.getNextStep(this.lastResult).toString();
         logger.info("Decision: " + decision);
-
         return decision;
     }
 

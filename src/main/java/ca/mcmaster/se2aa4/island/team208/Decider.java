@@ -16,6 +16,7 @@ public class Decider {
     private Drone drone;
     private RadarInterpreter radarInterpreter;
     private ScanInterpreter scanInterpreter;
+    private IslandMap map;
     private int currentStep; //next step that needs to be executed
     private int searchStage = 0;
 
@@ -27,6 +28,7 @@ public class Decider {
         this.scanInterpreter = new ScanInterpreter();
         this.currentStep=0;
         this.decisionQueue.add(Action.ECHO_FRONT);
+        this.map = new IslandMap();
     }
 
 
@@ -60,60 +62,79 @@ public class Decider {
     //function needs to eventually reach "STOP"
     //function may generate more than one step with each call
     private void setNextDecision(){
+
         switch(searchStage){
-            case 0 ->{
+            case 0 ->{ // Find the Left side of the island
+
                 this.decisionQueue.add(Action.SCAN);
                 if (this.currentStep - 1 == 0 || this.decisionQueue.get(this.currentStep - 1) == Action.FLY) {
                     this.decisionQueue.add(Action.ECHO_RIGHT);
                 } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_RIGHT) {
                     if (this.radarInterpreter.getFound().equals("GROUND")) {
                         this.decisionQueue.add(Action.TURN_RIGHT);
-                        this.decisionQueue.add(Action.ECHO_FRONT);
                     }
-                    else{
+                } else if (this.decisionQueue.get(this.currentStep - 1) == Action.TURN_RIGHT) {
+                    this.decisionQueue.add(Action.ECHO_FRONT);
+                } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_FRONT) {
+                    for (int i = 0; i < this.radarInterpreter.getRange(); i++) {
                         this.decisionQueue.add(Action.FLY);
+                        this.decisionQueue.add(Action.SCAN);
                     }
-
-                } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_FRONT){
-                    this.decisionQueue.addAll(ActionBuilder.actionsNTimes(
-                            new Action[]{Action.FLY,Action.SCAN},
-                            this.radarInterpreter.getRange()));
                     searchStage++;
+                } else {
+                    this.decisionQueue.add(Action.FLY);
                 }
+
             }
-            case 1 ->{
-                //Keep scanning island
-                if(this.decisionQueue.get(this.currentStep-1) == Action.SCAN){
-                    JSONArray biomes = this.scanInterpreter.getBiomes();
+            case 1 ->{ // Find the first creek
+                if (this.decisionQueue.get(this.currentStep - 1) == Action.SCAN) {
                     JSONArray creeks = this.scanInterpreter.getCreeks();
+                    this.decisionQueue.add(Action.ECHO_FRONT);
                     if(!creeks.isEmpty()){
                         this.decisionQueue.add(Action.STOP);
                         logger.info("A creek has been found.");
                     }
-                    else if(biomes.length()==1 && biomes.getString(0).equals("OCEAN")){
-                        switch(this.drone.getDirection()){
-                            case S -> {
+                } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_FRONT) {
+                    if (this.radarInterpreter.getFound().equals("GROUND")) {
+                        this.decisionQueue.add(Action.FLY);
+                        this.decisionQueue.add(Action.SCAN);
+                    } else {
+                        switch(this.drone.getDirection()) {
+                            case S -> this.decisionQueue.add(Action.ECHO_LEFT);
+                            case N -> this.decisionQueue.add(Action.ECHO_RIGHT);
+                        }
+                    }
+                } else {
+                    switch(this.drone.getDirection()){
+                        case S -> {
+                            if (this.radarInterpreter.getFound().equals("GROUND") && this.radarInterpreter.getRange() <= 1) {
+                                this.decisionQueue.add(Action.FLY);
+                                this.decisionQueue.add(Action.SCAN);
+                                this.decisionQueue.add(Action.ECHO_LEFT);
+                            } else {
                                 this.decisionQueue.add(Action.TURN_LEFT);
                                 this.decisionQueue.add(Action.TURN_LEFT);
+                                this.decisionQueue.add(Action.SCAN);
                             }
-                            case N -> {
+                        }
+                        case N -> {
+                            if (this.radarInterpreter.getFound().equals("GROUND") && this.radarInterpreter.getRange() <= 1) {
+                                this.decisionQueue.add(Action.FLY);
+                                this.decisionQueue.add(Action.SCAN);
+                                this.decisionQueue.add(Action.ECHO_RIGHT);
+                            } else {
                                 this.decisionQueue.add(Action.TURN_RIGHT);
                                 this.decisionQueue.add(Action.TURN_RIGHT);
+                                this.decisionQueue.add(Action.SCAN);
                             }
                         }
                     }
-                    else{
-                        this.decisionQueue.add(Action.FLY);
-                    }
                 }
-                else{
-                    this.decisionQueue.add(Action.SCAN);
-                }
+
             }
         }
 
     }
-
 
     //this is done when decision is about to be performed
     private JSONObject generateDecision(Action action){
