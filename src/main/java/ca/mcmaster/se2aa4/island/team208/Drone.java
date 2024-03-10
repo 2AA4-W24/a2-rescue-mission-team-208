@@ -7,6 +7,8 @@ public class Drone {
     private int battery;
     private Position position;
 
+    private final int STOP_COST = 20; //value arrived at after multiple tests
+
     public void initializeDrone(JSONObject info, int x, int y){
         this.direction = Direction.parseDirection(info.getString("heading"));
         this.battery = info.getInt("budget");
@@ -54,4 +56,7 @@ public class Drone {
         }
     }
 
+    public int getStopCost() {
+        return this.STOP_COST;
+    }
 }

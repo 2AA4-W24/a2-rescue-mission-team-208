@@ -30,6 +30,7 @@ public class Decider {
     private Integer currentStep; //next step that needs to be executed
     private int searchStage;
 
+
     public Decider(Drone drone) {
 
         this.decisionQueue = new ArrayList<>();
@@ -43,17 +44,16 @@ public class Decider {
         this.scanInterpreter = new ScanInterpreter();
 
         this.currentStep=0;
-        this.searchStage=-1;
+        this.searchStage=0;
 
         this.decisionQueue.add(Action.ECHO_FRONT);
         this.selectSearchStages();
 
-
     }
 
     private void selectSearchStages() {
-        this.stagesInOrder.add(new FindIslandBoundaries(
-                this.results, this.drone, this.map, this.radarInterpreter, this.currentStep));
+        this.stagesInOrder.add(new ScanIslandSequence(
+                this.results, this.drone, this.radarInterpreter, this.scanInterpreter));
         this.currentStage = this.stagesInOrder.get(0);
     }
 
@@ -71,6 +71,7 @@ public class Decider {
         step=this.generateDecision(decisionQueue.get(this.currentStep));
         this.currentStep++;
         logger.info("** Decision: {}", step.toString());
+        logger.info("Current budget: "+this.drone.getBattery());
         if(map.getTopLeft()!=null){
             logger.info("Top Left: " + map.getTopLeft().toString()+", " +
                     "Bottom Right: " + map.getBottomRight().toString());
@@ -86,12 +87,15 @@ public class Decider {
             case ECHO_FRONT,ECHO_LEFT,ECHO_RIGHT-> this.radarInterpreter.saveEchoResult(this.results.get(currentStep-1));
             case SCAN -> this.scanInterpreter.saveScan(results.get(currentStep-1));
         }
-
     }
 
     //function needs to eventually reach "STOP"
     //function may generate more than one step with each call
     private void setNextDecision(){
+
+
+
+        /*
         if(!this.currentStage.hasCompleted()){
             this.currentStage.setNextDecision(this.decisionQueue);
 
@@ -102,11 +106,16 @@ public class Decider {
         }
 
 
+         */
+
+        if(this.drone.getBattery()<=this.drone.getStopCost()+10){
+            this.decisionQueue.add(Action.STOP);
+        }
 
         switch(searchStage){
             case 0 ->{ // Find the Left side of the island
 
-                //this.decisionQueue.add(Action.SCAN);
+                this.decisionQueue.add(Action.SCAN);
                 if (this.currentStep - 1 == 0 || this.decisionQueue.get(this.currentStep - 1) == Action.FLY) {
                     this.decisionQueue.add(Action.ECHO_RIGHT);
                 } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_RIGHT) {
@@ -118,7 +127,7 @@ public class Decider {
                 } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_FRONT) {
                     for (int i = 0; i < this.radarInterpreter.getRange(); i++) {
                         this.decisionQueue.add(Action.FLY);
-                        //this.decisionQueue.add(Action.SCAN);
+                        this.decisionQueue.add(Action.SCAN);
                     }
                     searchStage++;
                 } else {
@@ -126,7 +135,14 @@ public class Decider {
                 }
 
             }
-            case 1 ->{ // Find the first creek
+            case 1 ->{
+                if(!currentStage.hasCompleted()){
+                    this.currentStage.setNextDecision(this.decisionQueue);
+                }
+                else{
+                    this.decisionQueue.add(Action.STOP);
+                }
+                /*
                 if (this.decisionQueue.get(this.currentStep - 1) == Action.SCAN) {
                     JSONArray creeks = this.scanInterpreter.getCreeks();
                     JSONArray sites = this.scanInterpreter.getSites();
@@ -181,9 +197,13 @@ public class Decider {
                         }
                     }
                 }
-
+                */
             }
+
+
         }
+
+
 
 
 

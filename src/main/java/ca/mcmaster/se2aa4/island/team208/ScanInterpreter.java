@@ -57,4 +57,8 @@ public class ScanInterpreter {
             throw new NullPointerException("No Scan has been saved yet.");
         }
     }
+
+    public boolean isOceanOnly() {
+        return getBiomes().length() == 1 && getBiomes().getString(0).equals("OCEAN");
+    }
 }

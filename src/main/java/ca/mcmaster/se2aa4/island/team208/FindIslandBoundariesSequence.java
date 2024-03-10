@@ -7,7 +7,7 @@ import org.junit.platform.commons.PreconditionViolationException;
 import java.util.List;
 
 
-public class FindIslandBoundaries implements ActionSequence {
+public class FindIslandBoundariesSequence implements ActionSequence {
     private final Logger logger = LogManager.getLogger();
     private final List<Result> results;
     private final Drone drone;
@@ -25,7 +25,7 @@ public class FindIslandBoundaries implements ActionSequence {
     private boolean completed;
 
     //Assumes drone is at the North-West corner facing East
-    public FindIslandBoundaries(List<Result> results, Drone drone, IslandMap map, RadarInterpreter radar, int START_STEP) {
+    public FindIslandBoundariesSequence(List<Result> results, Drone drone, IslandMap map, RadarInterpreter radar, int START_STEP) {
         this.results=results;
         this.drone = drone;
         this.map=map;
