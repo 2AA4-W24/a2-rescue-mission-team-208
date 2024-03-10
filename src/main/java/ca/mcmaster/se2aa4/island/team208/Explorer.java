@@ -34,7 +34,7 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public void acknowledgeResults(String s) {
-        this.lastResult = new Result(s);
+        this.lastResult = new Result(s, this.decider.getStepCount());
         this.lastResult.printResults();
     }
 

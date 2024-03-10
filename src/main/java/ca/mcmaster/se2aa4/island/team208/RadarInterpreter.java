@@ -4,6 +4,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RadarInterpreter {
+    public static final String OUT_OF_RANGE = "OUT_OF_RANGE";
+    public static final String GROUND = "GROUND";
+
     private Result lastEcho;
     private int range;
     private String found;

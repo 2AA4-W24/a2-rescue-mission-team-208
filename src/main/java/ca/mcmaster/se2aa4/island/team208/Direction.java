@@ -12,9 +12,9 @@ public enum Direction {
     public static Direction getRight(Direction d){
         return Direction.values()[(d.ordinal()+1)%4];
     }
-    public static Direction parseDirection(String direction){
-        direction=direction.toUpperCase();
-        return switch (direction) {
+    public static Direction parseDirection(String d){
+        d=d.toUpperCase();
+        return switch (d) {
             case "N", "NORTH" -> Direction.N;
             case "S", "SOUTH" -> Direction.S;
             case "E", "EAST" -> Direction.E;
@@ -22,5 +22,24 @@ public enum Direction {
             default ->
                     throw new IllegalArgumentException("Cannot parse Direction (must be the full direction name or one letter representation).");
         };
+    }
+    public static int[] getDirectionVector(Direction d){
+        switch(d){
+            case N -> {
+                return new int[]{0,1};
+            }
+            case S -> {
+                return new int[]{0,-1};
+            }
+            case E -> {
+                return new int[]{1,0};
+            }
+            case W -> {
+                return new int[]{-1,0};
+            }
+            default -> {
+                throw new NullPointerException("Invalid argument.");
+            }
+        }
     }
 }
