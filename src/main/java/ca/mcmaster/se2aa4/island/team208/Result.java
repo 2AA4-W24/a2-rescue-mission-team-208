@@ -15,14 +15,16 @@ public class Result {
     private Integer cost;
     private String status;
     private JSONObject extra_info;
+    private final int step;
 
 
-    public Result(String s) {
+    public Result(String s, int step) {
         response = new JSONObject(new JSONTokener(new StringReader(s)));
         response_str = response.toString(2);
         cost = response.getInt("cost");
         status = response.getString("status");
         extra_info = response.getJSONObject("extras");
+        this.step=step;
     }
     public JSONObject getResponse(){
         return response;
@@ -51,5 +53,8 @@ public class Result {
         logger.info("Additional information received: {}", extra_info);
     }
 
-    
+
+    public int getStep() {
+        return step;
+    }
 }
