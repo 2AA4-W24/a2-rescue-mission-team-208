@@ -2,7 +2,6 @@ package ca.mcmaster.se2aa4.island.team208;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -53,7 +52,7 @@ public class Decider {
 
     private void selectSearchStages() {
         this.stagesInOrder.add(new ScanIslandSequence(
-                this.results, this.drone, this.radarInterpreter, this.scanInterpreter));
+                this.results, this.drone, this.radarInterpreter, this.scanInterpreter, this.map));
         this.currentStage = this.stagesInOrder.get(0);
     }
 
@@ -93,25 +92,6 @@ public class Decider {
     //function may generate more than one step with each call
     private void setNextDecision(){
 
-
-
-        /*
-        if(!this.currentStage.hasCompleted()){
-            this.currentStage.setNextDecision(this.decisionQueue);
-
-        }
-        else if(searchStage==-1){
-            logger.info("Remaining budget: " + this.drone.getBattery());
-            searchStage++;
-        }
-
-
-         */
-
-        if(this.drone.getBattery()<=this.drone.getStopCost()+10){
-            this.decisionQueue.add(Action.STOP);
-        }
-
         switch(searchStage){
             case 0 ->{ // Find the Left side of the island
 
@@ -142,70 +122,8 @@ public class Decider {
                 else{
                     this.decisionQueue.add(Action.STOP);
                 }
-                /*
-                if (this.decisionQueue.get(this.currentStep - 1) == Action.SCAN) {
-                    JSONArray creeks = this.scanInterpreter.getCreeks();
-                    JSONArray sites = this.scanInterpreter.getSites();
-                    this.decisionQueue.add(Action.ECHO_FRONT);
-                    if(!creeks.isEmpty()){
-                        this.map.addCreek(new Creek(creeks.get(0).toString()));
-                        logger.info("A creek has been found.");
-                    }
-                    if(!sites.isEmpty()){
-                        this.map.setSite(new Site(sites.get(0).toString()));
-                        logger.info("The site has been found.");
-                    }
-                } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_FRONT) {
-                    if ((this.decisionQueue.get(this.currentStep - 3) == Action.TURN_LEFT
-                            || this.decisionQueue.get(this.currentStep - 3) == Action.TURN_RIGHT)
-                            && this.radarInterpreter.getFound().equals("OUT_OF_RANGE")) {
-                        this.decisionQueue.add(Action.STOP);
-                        logger.info("CREEKS: " + this.map.getCreeks());
-                        logger.info("SITE: " + this.map.getSite());
-                    } else if (this.radarInterpreter.getFound().equals("GROUND")) {
-                        this.decisionQueue.add(Action.FLY);
-                        this.decisionQueue.add(Action.SCAN);
-                    } else {
-                        switch(this.drone.getDirection()) {
-                            case S -> this.decisionQueue.add(Action.ECHO_LEFT);
-                            case N -> this.decisionQueue.add(Action.ECHO_RIGHT);
-                        }
-                    }
-                } else {
-                    switch(this.drone.getDirection()){
-                        case S -> {
-                            if (this.radarInterpreter.getFound().equals("GROUND") && this.radarInterpreter.getRange() <= 1) {
-                                this.decisionQueue.add(Action.FLY);
-                                this.decisionQueue.add(Action.SCAN);
-                                this.decisionQueue.add(Action.ECHO_LEFT);
-                            } else {
-                                this.decisionQueue.add(Action.TURN_LEFT);
-                                this.decisionQueue.add(Action.TURN_LEFT);
-                                this.decisionQueue.add(Action.SCAN);
-                            }
-                        }
-                        case N -> {
-                            if (this.radarInterpreter.getFound().equals("GROUND") && this.radarInterpreter.getRange() <= 1) {
-                                this.decisionQueue.add(Action.FLY);
-                                this.decisionQueue.add(Action.SCAN);
-                                this.decisionQueue.add(Action.ECHO_RIGHT);
-                            } else {
-                                this.decisionQueue.add(Action.TURN_RIGHT);
-                                this.decisionQueue.add(Action.TURN_RIGHT);
-                                this.decisionQueue.add(Action.SCAN);
-                            }
-                        }
-                    }
-                }
-                */
             }
-
-
         }
-
-
-
-
 
     }
 
