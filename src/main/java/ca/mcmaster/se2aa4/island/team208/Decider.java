@@ -94,7 +94,6 @@ public class Decider {
 
         switch(searchStage){
             case 0 ->{ // Find the Left side of the island
-
                 this.decisionQueue.add(Action.SCAN);
                 if (this.currentStep - 1 == 0 || this.decisionQueue.get(this.currentStep - 1) == Action.FLY) {
                     this.decisionQueue.add(Action.ECHO_RIGHT);
@@ -107,8 +106,8 @@ public class Decider {
                 } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_FRONT) {
                     for (int i = 0; i < this.radarInterpreter.getRange(); i++) {
                         this.decisionQueue.add(Action.FLY);
-                        this.decisionQueue.add(Action.SCAN);
                     }
+                    this.decisionQueue.add(Action.SCAN);
                     searchStage++;
                 } else {
                     this.decisionQueue.add(Action.FLY);

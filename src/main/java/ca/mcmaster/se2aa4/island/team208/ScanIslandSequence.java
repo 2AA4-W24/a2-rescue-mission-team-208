@@ -75,7 +75,7 @@ public class ScanIslandSequence implements ActionSequence{
                                 decisionQueue.add(this.northTurn);
                                 decisionQueue.add(this.northTurn);
                                 decisionQueue.add(this.northTurn);
-                                decisionQueue.add(Action.ECHO_FRONT);
+                                decisionQueue.add(this.northEcho);
                             }
                             case S -> {
                                 decisionQueue.add(this.southTurn);
@@ -83,7 +83,7 @@ public class ScanIslandSequence implements ActionSequence{
                                 decisionQueue.add(this.southTurn);
                                 decisionQueue.add(this.southTurn);
                                 decisionQueue.add(this.southTurn);
-                                decisionQueue.add(Action.ECHO_FRONT);
+                                decisionQueue.add(this.southEcho);
                             }
                         }
                         this.secondFly = true;
@@ -108,7 +108,7 @@ public class ScanIslandSequence implements ActionSequence{
                     case S -> {
                         if (this.radar.getFound().equals("GROUND")) {
                             decisionQueue.add(Action.FLY);
-                            if (this.radar.getRange() <= 1) decisionQueue.add(Action.SCAN);
+                            if (this.radar.getRange() == 0) decisionQueue.add(Action.SCAN);
                             decisionQueue.add(this.southEcho);
                         } else {
                             decisionQueue.add(this.southTurn);
@@ -119,7 +119,7 @@ public class ScanIslandSequence implements ActionSequence{
                     case N -> {
                         if (this.radar.getFound().equals("GROUND")) {
                             decisionQueue.add(Action.FLY);
-                            if (this.radar.getRange() <= 1) decisionQueue.add(Action.SCAN);
+                            if (this.radar.getRange() == 0) decisionQueue.add(Action.SCAN);
                             decisionQueue.add(this.northEcho);
                         } else {
                             decisionQueue.add(this.northTurn);
