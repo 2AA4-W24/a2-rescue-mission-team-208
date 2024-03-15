@@ -8,5 +8,6 @@ public interface Map {
     void setSite(Site site);
     ArrayList<Creek> getCreeks();
     Site getSite();
+    Creek getClosestCreek();
 
 }

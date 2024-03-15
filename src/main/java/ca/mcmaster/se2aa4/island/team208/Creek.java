@@ -1,4 +1,4 @@
 package ca.mcmaster.se2aa4.island.team208;
 
-public record Creek(String uuid) {
+public record Creek(String uuid, Position pos) {
 }

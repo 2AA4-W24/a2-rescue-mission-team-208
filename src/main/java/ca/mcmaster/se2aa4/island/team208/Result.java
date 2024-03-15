@@ -53,7 +53,6 @@ public class Result {
         logger.info("Additional information received: {}", extra_info);
     }
 
-
     public int getStep() {
         return step;
     }

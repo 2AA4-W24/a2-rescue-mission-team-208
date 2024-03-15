@@ -51,12 +51,12 @@ public class ScanIslandSequence implements ActionSequence{
                 JSONArray sites = this.scanner.getSites();
                 decisionQueue.add(Action.ECHO_FRONT);
                 if (!creeks.isEmpty()) {
-                    this.map.addCreek(new Creek(creeks.get(0).toString()));
-                    logger.info("A creek has been found.");
+                    this.map.addCreek(new Creek(creeks.get(0).toString(),
+                            new Position(this.drone.getX(), this.drone.getY())));
                 }
                 if (!sites.isEmpty()) {
-                    this.map.setSite(new Site(sites.get(0).toString()));
-                    logger.info("The site has been found.");
+                    this.map.setSite(new Site(sites.get(0).toString(),
+                            new Position(this.drone.getX(), this.drone.getY())));
                 }
             } else if (decisionQueue.get(decisionQueue.size() - 1) == Action.ECHO_FRONT) {
                 if ((decisionQueue.get(decisionQueue.size() - 3) == this.northTurn
@@ -89,9 +89,9 @@ public class ScanIslandSequence implements ActionSequence{
                         this.secondFly = true;
                     } else {
                         decisionQueue.add(Action.SCAN);
+                        logger.info("CLOSEST CREEK: " + this.map.getClosestCreek());
+                        logger.info("Emergency Site: " + this.map.getSite());
                         decisionQueue.add(Action.STOP);
-                        logger.info("CREEKS: " + this.map.getCreeks());
-                        logger.info("SITE: " + this.map.getSite());
                     }
 
                 } else if (this.radar.getFound().equals("GROUND")) {

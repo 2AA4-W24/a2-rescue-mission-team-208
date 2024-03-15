@@ -20,8 +20,8 @@ public class Decider {
     private final List<Action> decisionQueue;
     private final List<ActionSequence> stagesInOrder;
     private ActionSequence currentStage;
-
     private final List<Result> results;
+    private Distance distance;
     private Drone drone;
     private RadarInterpreter radarInterpreter;
     private ScanInterpreter scanInterpreter;
@@ -37,6 +37,7 @@ public class Decider {
         this.results = new ArrayList<>();
 
         this.map = new IslandMap(new Position(0,0));
+        this.distance = null;
         this.drone=drone;
 
         this.radarInterpreter = new RadarInterpreter();
@@ -93,7 +94,7 @@ public class Decider {
     private void setNextDecision(){
 
         switch(searchStage){
-            case 0 ->{ // Find the Left side of the island
+            case 0 ->{ // Find the island
                 this.decisionQueue.add(Action.SCAN);
                 if (this.currentStep - 1 == 0 || this.decisionQueue.get(this.currentStep - 1) == Action.FLY) {
                     this.decisionQueue.add(Action.ECHO_RIGHT);
@@ -114,14 +115,12 @@ public class Decider {
                 }
 
             }
-            case 1 ->{
+            case 1 ->{ // Search island for creeks and the emergency site
                 if(!currentStage.hasCompleted()){
                     this.currentStage.setNextDecision(this.decisionQueue);
                 }
-                else{
-                    this.decisionQueue.add(Action.STOP);
-                }
             }
+
         }
 
     }
@@ -134,7 +133,6 @@ public class Decider {
         switch(action){
             case TURN_LEFT, ECHO_LEFT -> {
                 step.put("parameters", new JSONObject().put("direction",Direction.getLeft(drone.getDirection()).toString()));
-
             }
             case TURN_RIGHT, ECHO_RIGHT -> {
                 step.put("parameters", new JSONObject().put("direction",Direction.getRight(drone.getDirection()).toString()));
@@ -142,9 +140,7 @@ public class Decider {
             case ECHO_FRONT -> {
                 step.put("parameters", new JSONObject().put("direction",drone.getDirection().toString()));
             }
-
             default->{
-
             }
         }
         return step;
