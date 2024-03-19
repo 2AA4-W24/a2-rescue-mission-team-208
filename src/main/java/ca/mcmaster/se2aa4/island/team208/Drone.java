@@ -8,10 +8,10 @@ public class Drone {
     private int battery;
     private Position position;
 
-    private final String UNINITIALIZED_MESSAGE;
+    private final String uninitializedMessage;
     public Drone(){
         this.initialized=false;
-        this.UNINITIALIZED_MESSAGE ="Drone must be initialized first.";
+        this.uninitializedMessage ="Drone must be initialized first.";
     }
 
     public void initializeDrone(JSONObject info, int x, int y){
@@ -23,32 +23,32 @@ public class Drone {
 
     public int getX() {
         if(!this.initialized){
-            throw new NullPointerException(UNINITIALIZED_MESSAGE);
+            throw new NullPointerException(uninitializedMessage);
         }
         return this.position.getX();
     }
     public int getY() {
         if(!this.initialized){
-            throw new NullPointerException(UNINITIALIZED_MESSAGE);
+            throw new NullPointerException(uninitializedMessage);
         }
         return this.position.getY();
     }
     public Direction getDirection(){
         if(!this.initialized){
-            throw new NullPointerException(UNINITIALIZED_MESSAGE);
+            throw new NullPointerException(uninitializedMessage);
         }
         return this.direction;
     }
     public int getBattery(){
         if(!this.initialized){
-            throw new NullPointerException(UNINITIALIZED_MESSAGE);
+            throw new NullPointerException(uninitializedMessage);
         }
         return this.battery;
     }
 
     public void processResults(Result lastResult) {
         if(!this.initialized){
-            throw new NullPointerException(UNINITIALIZED_MESSAGE);
+            throw new NullPointerException(uninitializedMessage);
         }
         this.battery -= lastResult.getCost();
         int[]vector = Direction.getDirectionVector(this.direction);
@@ -70,13 +70,12 @@ public class Drone {
                 this.position.changeByOffset(newVector[0],newVector[1]);
             }
             case FLY -> this.position.changeByOffset(vector[0],vector[1]);
-            default -> {}
         }
     }
 
     public int getStopCost() {
         if(!this.initialized){
-            throw new NullPointerException(UNINITIALIZED_MESSAGE);
+            throw new NullPointerException(uninitializedMessage);
         }
         //value arrived at after multiple tests
         return 20;

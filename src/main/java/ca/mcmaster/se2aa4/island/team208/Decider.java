@@ -101,7 +101,6 @@ public class Decider implements DecisionGenerator{
         switch(this.lastAction){
             case ECHO_FRONT,ECHO_LEFT,ECHO_RIGHT-> this.radarInterpreter.saveEchoResult(this.results.get(currentStep-1));
             case SCAN -> this.scanInterpreter.saveScan(results.get(currentStep-1));
-            default -> {}
         }
         this.ready=true;
     }
