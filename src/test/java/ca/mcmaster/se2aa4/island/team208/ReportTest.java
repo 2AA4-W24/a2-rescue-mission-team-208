@@ -25,7 +25,7 @@ public class ReportTest {
         
         // Construct the expected contents string
         String expectedContents = "The closest creek is: creek-123";
-        assertEquals(expectedContents, report.getContents(), "Report contents should accurately describe the closest creek.");
+        assertEquals(expectedContents, report.toString(), "Report contents should accurately describe the closest creek.");
         assertEquals(testPosition, report.getClosestCreek().pos(), "The position of the closest creek should match the one provided.");
     }
 }

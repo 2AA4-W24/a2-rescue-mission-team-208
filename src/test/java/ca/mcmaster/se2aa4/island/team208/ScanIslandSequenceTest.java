@@ -34,7 +34,7 @@ public class ScanIslandSequenceTest {
 
     @Test
     void testInitialDecisionFacingSouth() {
-        sequence.setNextDecision(decisionQueue);
+        sequence.generateNextActions(decisionQueue);
         assertFalse(decisionQueue.isEmpty(), "Decision queue should not be empty after the first decision.");
         assertEquals(Action.ECHO_FRONT, decisionQueue.get(0), "The first action should be ECHO_FRONT when starting facing South.");
     }
@@ -42,11 +42,11 @@ public class ScanIslandSequenceTest {
     void testReactionToScanFindingCreek() {
         // Simulate scan result indicating a creek was found
         String scanJson = "{\"cost\":1, \"status\":\"OK\", \"extras\":{\"creeks\":[\"creek-123\"], \"biomes\":[], \"sites\":[]}}";
-        Result scanResult = new Result(scanJson, 1);
+        Result scanResult = new Result(scanJson,Action.SCAN);
         results.add(scanResult);
     
         // Assuming drone is facing the direction required by the test at the start
-        sequence.setNextDecision(decisionQueue);
+        sequence.generateNextActions(decisionQueue);
         
         assertTrue(decisionQueue.contains(Action.ECHO_FRONT), "Decision queue should include ECHO_FRONT after finding a creek in the scan.");
     }

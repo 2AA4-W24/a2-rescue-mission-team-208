@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface ActionSequence {
 
-    void setNextDecision(List<Action>decisionQueue);
+    void generateNextActions(List<Action>decisionQueue);
     boolean hasCompleted();
 }

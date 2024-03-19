@@ -27,9 +27,9 @@ class DroneTest {
     @Test
     void testFlyAndUpdateBattery() {
         String flyJson = "{\"cost\":10, \"status\":\"OK\", \"extras\":{}}";
-        Result flyResult = new Result(flyJson, 1); // Using step count 1 for simplicity
+        Result flyResult = new Result(flyJson,Action.FLY); // Using step count 1 for simplicity
 
-        drone.processResults(Action.FLY, flyResult);
+        drone.processResults(flyResult);
         
         assertEquals(1000 - flyResult.getCost(), drone.getBattery(), "Battery should decrease by the cost of flying.");
         assertEquals(1, drone.getX(), "Drone should move 1 unit East when flying.");
@@ -39,9 +39,9 @@ class DroneTest {
     @Test
     void testTurnRight() {
         String turnJson = "{\"cost\":5, \"status\":\"OK\", \"extras\":{}}";
-        Result turnRightResult = new Result(turnJson, 1); 
+        Result turnRightResult = new Result(turnJson,Action.FLY);
 
-        drone.processResults(Action.TURN_RIGHT, turnRightResult);
+        drone.processResults(turnRightResult);
 
         assertEquals(Direction.S, drone.getDirection(), "Direction should be South after turning right from East.");
     }
@@ -49,9 +49,9 @@ class DroneTest {
     @Test
     void testTurnLeft() {
         String turnJson = "{\"cost\":5, \"status\":\"OK\", \"extras\":{}}";
-        Result turnLeftResult = new Result(turnJson, 1); 
+        Result turnLeftResult = new Result(turnJson, Action.TURN_LEFT);
 
-        drone.processResults(Action.TURN_LEFT, turnLeftResult);
+        drone.processResults(turnLeftResult);
 
         assertEquals(Direction.N, drone.getDirection(), "Direction should be North after turning left from East.");
     }

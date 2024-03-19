@@ -20,7 +20,7 @@ public class ScanInterpreter {
         this.lastScan=scan;
 
         try{
-            JSONObject extras=this.lastScan.getExtraInfo();
+            JSONObject extras=this.lastScan.getExtras();
 
             this.creeks = extras.getJSONArray("creeks");
             this.biomes = extras.getJSONArray("biomes");

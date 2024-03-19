@@ -22,7 +22,7 @@ public class RadarInterpreter {
 
         // Interpret echo results and update the map accordingly
         try{
-            JSONObject extras=echoResult.getExtraInfo();
+            JSONObject extras=echoResult.getExtras();
             this.range = extras.getInt("range");
             this.found = extras.getString("found");
         }catch (JSONException e){

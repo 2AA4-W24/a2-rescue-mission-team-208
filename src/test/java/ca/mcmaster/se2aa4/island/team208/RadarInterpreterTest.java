@@ -1,5 +1,4 @@
 package ca.mcmaster.se2aa4.island.team208;
-import org.json.JSONObject;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ public class RadarInterpreterTest {
     void testSaveEchoResultWithGround() {
         // Simulate a successful echo result indicating ground found within range
         String resultJson = "{\"cost\":1, \"status\":\"OK\", \"extras\":{\"range\":5, \"found\":\"GROUND\"}}";
-        Result echoResult = new Result(resultJson, 1);
+        Result echoResult = new Result(resultJson, Action.ECHO_FRONT);
         radarInterpreter.saveEchoResult(echoResult);
 
         assertEquals(5, radarInterpreter.getRange(), "Range should be 5 after processing echo result.");
@@ -34,7 +33,7 @@ public class RadarInterpreterTest {
     void testSaveEchoResultOutOfRange() {
         // Simulate an echo result indicating out of range
         String resultJson = "{\"cost\":1, \"status\":\"OK\", \"extras\":{\"range\":0, \"found\":\"OUT_OF_RANGE\"}}";
-        Result echoResult = new Result(resultJson, 1);
+        Result echoResult = new Result(resultJson, Action.ECHO_FRONT);
         radarInterpreter.saveEchoResult(echoResult);
 
         assertEquals(0, radarInterpreter.getRange(), "Range should be 0 for OUT_OF_RANGE result.");

@@ -3,6 +3,7 @@ package ca.mcmaster.se2aa4.island.team208;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
+import org.junit.platform.commons.PreconditionViolationException;
 
 import java.util.*;
 
@@ -14,119 +15,115 @@ import java.util.*;
 
  */
 
-public class Decider {
+public class Decider implements DecisionGenerator{
 
     private final Logger logger = LogManager.getLogger();
+
+    private final Queue<ActionSequence> stageQueue;
     private final List<Action> decisionQueue;
-    private final List<ActionSequence> stagesInOrder;
-    private ActionSequence currentStage;
     private final List<Result> results;
-    private Distance distance;
-    private Drone drone;
-    private RadarInterpreter radarInterpreter;
-    private ScanInterpreter scanInterpreter;
-    private IslandMap map;
+
+    private final Drone drone;
+    private final RadarInterpreter radarInterpreter;
+    private final ScanInterpreter scanInterpreter;
+    private final IslandMap map;
+
+    private ActionSequence currentStage;
+    private Action lastAction;
     private Integer currentStep; //next step that needs to be executed
-    private int searchStage;
+    private boolean ready;
 
 
-    public Decider(Drone drone) {
+    public Decider() {
 
         this.decisionQueue = new ArrayList<>();
-        this.stagesInOrder = new ArrayList<>();
+        this.stageQueue = new ArrayDeque<>();
         this.results = new ArrayList<>();
 
         this.map = new IslandMap(new Position(0,0));
-        this.distance = null;
-        this.drone=drone;
+        this.drone=new Drone();
 
         this.radarInterpreter = new RadarInterpreter();
         this.scanInterpreter = new ScanInterpreter();
 
         this.currentStep=0;
-        this.searchStage=0;
 
         this.decisionQueue.add(Action.ECHO_FRONT);
+        this.lastAction = this.decisionQueue.get(decisionQueue.size()-1);
         this.selectSearchStages();
+        this.ready=true;
+    }
 
+    public void initialize(String s, int x, int y) {
+        Configuration config = new Configuration(s);
+        this.drone.initializeDrone(config.getInfo(), x, y);
+        config.printStatus();
     }
 
     private void selectSearchStages() {
-        this.stagesInOrder.add(new ScanIslandSequence(
+        this.stageQueue.add(new FindIslandSequence(this.radarInterpreter, this.results));
+        this.stageQueue.add(new ScanIslandSequence(
                 this.results, this.drone, this.radarInterpreter, this.scanInterpreter, this.map));
-        this.currentStage = this.stagesInOrder.get(0);
+
+        this.currentStage = this.stageQueue.remove();
     }
 
 
-    public JSONObject getNextStep(Result lastResult){
+    public String getNextStep(){
 
-        JSONObject step;
-        if(this.currentStep>0)this.processResults(lastResult);
-
-
+        JSONObject decision;
         if (this.currentStep >= decisionQueue.size()) {
-            this.setNextDecision();
-        }
+            if(this.ready){
+                this.generateNextActions();
+            }
+            else{
+                throw new PreconditionViolationException("Response must be processed before another action can be taken.");
 
-        step=this.generateDecision(decisionQueue.get(this.currentStep));
-        this.currentStep++;
-        logger.info("** Decision: {}", step.toString());
-        logger.info("Current budget: "+this.drone.getBattery());
-        if(map.getTopLeft()!=null){
-            logger.info("Top Left: " + map.getTopLeft().toString()+", " +
-                    "Bottom Right: " + map.getBottomRight().toString());
+            }
         }
-        return step;
+        this.lastAction = this.decisionQueue.get(this.currentStep);
+        decision=this.computeDecision(this.lastAction);
+        this.currentStep++;
+
+        logger.info("** Decision: {}", decision.toString());
+        logger.info("Current budget: "+this.drone.getBattery());
+
+        this.ready = false;
+        return decision.toString();
     }
 
-    private void processResults(Result lastResult) {
-        this.results.add(lastResult);
-        this.drone.processResults(decisionQueue.get(currentStep-1),lastResult);
-
-        switch(this.decisionQueue.get(currentStep-1)){
+    public void processResults(String s) {
+        this.results.add(new Result(s, this.lastAction));
+        this.drone.processResults(this.results.get(this.currentStep-1));
+        switch(this.lastAction){
             case ECHO_FRONT,ECHO_LEFT,ECHO_RIGHT-> this.radarInterpreter.saveEchoResult(this.results.get(currentStep-1));
             case SCAN -> this.scanInterpreter.saveScan(results.get(currentStep-1));
         }
+        this.ready=true;
     }
 
     //function needs to eventually reach "STOP"
     //function may generate more than one step with each call
-    private void setNextDecision(){
+    private void generateNextActions(){
 
-        switch(searchStage){
-            case 0 ->{ // Find the island
-                this.decisionQueue.add(Action.SCAN);
-                if (this.currentStep - 1 == 0 || this.decisionQueue.get(this.currentStep - 1) == Action.FLY) {
-                    this.decisionQueue.add(Action.ECHO_RIGHT);
-                } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_RIGHT) {
-                    if (this.radarInterpreter.getFound().equals("GROUND")) {
-                        this.decisionQueue.add(Action.TURN_RIGHT);
-                    }
-                } else if (this.decisionQueue.get(this.currentStep - 1) == Action.TURN_RIGHT) {
-                    this.decisionQueue.add(Action.ECHO_FRONT);
-                } else if (this.decisionQueue.get(this.currentStep - 1) == Action.ECHO_FRONT) {
-                    for (int i = 0; i < this.radarInterpreter.getRange(); i++) {
-                        this.decisionQueue.add(Action.FLY);
-                    }
-                    this.decisionQueue.add(Action.SCAN);
-                    searchStage++;
-                } else {
-                    this.decisionQueue.add(Action.FLY);
-                }
-
-            }
-            case 1 ->{ // Search island for creeks and the emergency site
-                if(!currentStage.hasCompleted()){
-                    this.currentStage.setNextDecision(this.decisionQueue);
-                }
-            }
-
+        //dequeue next stage
+        if(currentStage.hasCompleted()){
+            this.currentStage=this.stageQueue.poll();
         }
 
+        //exploring has been completed
+        if(this.currentStage==null){
+            this.decisionQueue.add(Action.STOP);
+        }
+
+        //current stage has not been completed
+        else{
+            this.currentStage.generateNextActions(this.decisionQueue);
+        }
     }
 
     //this is done when decision is about to be performed
-    private JSONObject generateDecision(Action action){
+    private JSONObject computeDecision(Action action){
         JSONObject step = new JSONObject();
 
         step.put("action", action.toString());
@@ -145,8 +142,10 @@ public class Decider {
         }
         return step;
     }
-
-    public int getStepCount() {
-        return this.currentStep;
+    public Action getLastAction() {
+        return this.lastAction;
+    }
+    public String getReport() {
+        return new Report(this.map.getClosestCreek()).toString();
     }
 }

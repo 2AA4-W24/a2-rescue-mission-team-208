@@ -42,7 +42,7 @@ public class ScanIslandSequence implements ActionSequence{
     }
 
     @Override
-    public void setNextDecision(List<Action> decisionQueue) {
+    public void generateNextActions(List<Action> decisionQueue) {
 
         if(this.started && !this.completed) {
             if (decisionQueue.get(decisionQueue.size() - 1) == Action.SCAN

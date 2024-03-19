@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 public class Report {
 
     private final Logger logger = LogManager.getLogger();
-    private Creek closestCreek;
+    private final Creek closestCreek;
 
     public Report(Creek creek) {
         this.closestCreek = creek;
@@ -16,7 +16,7 @@ public class Report {
         return this.closestCreek;
     }
 
-    public String getContents() {
+    public String toString() {
         return "The closest creek is: " + this.closestCreek.uuid();
     }
 

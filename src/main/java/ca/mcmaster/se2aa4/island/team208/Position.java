@@ -27,4 +27,8 @@ public class Position {
     public String toString() {
         return "(" + x + "," + y + ")";
     }
+
+    public static double getDistance(Position pos1, Position pos2){
+        return Math.sqrt(Math.pow(pos2.getX() - pos1.getX(), 2) + Math.pow(pos2.getY() - pos1.getY(), 2));
+    }
 }

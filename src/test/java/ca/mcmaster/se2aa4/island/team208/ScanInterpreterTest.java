@@ -1,5 +1,4 @@
 package ca.mcmaster.se2aa4.island.team208;
-import org.json.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,7 @@ public class ScanInterpreterTest {
     void testSaveScanAndDataRetrieval() {
         // Example Json Object
         String scanJson = "{\"cost\":1, \"status\":\"OK\", \"extras\":{\"creeks\":[\"creek-id1\"], \"biomes\":[\"OCEAN\", \"BEACH\"], \"sites\":[\"site-id1\"]}}";
-        Result scanResult = new Result(scanJson, 1);
+        Result scanResult = new Result(scanJson, Action.SCAN);
         scanInterpreter.saveScan(scanResult);
 
         // Verify that the creeks, biomes, and sites are correctly parsed and stored
@@ -30,7 +29,7 @@ public class ScanInterpreterTest {
     void testIsOceanOnly() {
         // Adjusted to include empty arrays for "creeks" and "sites" to avoid IllegalArgumentException
         String oceanOnlyJson = "{\"cost\":1, \"status\":\"OK\", \"extras\":{\"creeks\":[], \"biomes\":[\"OCEAN\"], \"sites\":[]}}";
-        Result oceanOnlyResult = new Result(oceanOnlyJson, 1);
+        Result oceanOnlyResult = new Result(oceanOnlyJson, Action.SCAN);
         scanInterpreter.saveScan(oceanOnlyResult);
     
         assertTrue(scanInterpreter.isOceanOnly(), "isOceanOnly should return true when the biome is only OCEAN.");

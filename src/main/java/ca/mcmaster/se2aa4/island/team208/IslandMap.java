@@ -6,18 +6,15 @@ public class IslandMap implements Map{
     private final ArrayList<Creek> creeks;
     private final Position start;
     private Creek closestCreek;
+    private double distance;
     private Site site;
-    private Position topLeft;
-    private Position bottomRight;
 
-    public IslandMap(Position start) {
+    public IslandMap(Position startReference) {
         this.creeks = new ArrayList<>();
         this.site = null;
         this.closestCreek = null;
-        this.start = start;
-
-        this.topLeft = null;
-        this.bottomRight = null;
+        this.start = startReference;
+        this.distance = Double.POSITIVE_INFINITY;
     }
 
     @Override
@@ -43,29 +40,15 @@ public class IslandMap implements Map{
     @Override
     public Creek getClosestCreek() {
         if (this.site != null && !(this.creeks.isEmpty())) {
-            Distance distance = null;
             for (Creek creek : this.creeks) {
-                Distance newDistance = new Distance(creek.pos(), this.site.pos());
-                if (distance == null || distance.getDistance() > newDistance.getDistance()) {
+                double newDistance = Position.getDistance(creek.pos(), this.site.pos());
+                if (distance > newDistance) {
                     distance = newDistance;
                     this.closestCreek = creek;
                 }
             }
         }
         return this.closestCreek;
-    }
-
-    public void setTopLeft(Position topLeft) {
-        this.topLeft = topLeft;
-    }
-    public void setBottomRight(Position bottomRight) {
-        this.bottomRight = bottomRight;
-    }
-    public Position getTopLeft() {
-        return topLeft;
-    }
-    public Position getBottomRight() {
-        return bottomRight;
     }
 
     public Position getStart() {
