@@ -33,6 +33,11 @@ class PositionTest {
     }
 
     @Test
+    void testDistance(){
+        assertEquals(5,Position.getDistance(position,new Position(3,4)),0.5);
+    }
+
+    @Test
     void testToString() {
         assertEquals("(0,0)", position.toString(), "String representation of initial position should be (0,0).");
         position.setPosition(1, 2);

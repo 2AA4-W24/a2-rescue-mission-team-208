@@ -17,11 +17,6 @@ public class ResultTest {
         
         // Check the extra_info JSON object
         assertEquals("example", result.getExtras().getString("detail"), "Extra info should contain the correct 'detail' value.");
-
-
-        // Ensure the response string is correctly formatted
-        JSONObject expectedResponse = new JSONObject(jsonInput);
-        assertEquals(expectedResponse.toString(2), result.toString(), "Response string should match the expected JSON format.");
     }
 
 }

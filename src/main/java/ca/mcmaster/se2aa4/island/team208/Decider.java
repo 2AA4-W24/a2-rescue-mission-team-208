@@ -63,18 +63,21 @@ public class Decider implements DecisionGenerator{
     private void selectSearchStages() {
         this.stageQueue.add(new FindIslandSequence(this.radarInterpreter, this.results));
         this.stageQueue.add(new ScanIslandSequence(
-                this.results, this.drone, this.radarInterpreter, this.scanInterpreter, this.map));
+                this.drone, this.radarInterpreter, this.scanInterpreter, this.map));
 
         this.currentStage = this.stageQueue.remove();
     }
 
 
     public String getNextStep(){
-
-        JSONObject decision;
         if (this.currentStep >= decisionQueue.size()) {
             if(this.ready){
-                this.generateNextActions();
+                if(this.drone.getBattery()<=this.drone.getStopCost()){
+                    return this.computeDecision(Action.STOP).toString();
+                }
+                else{
+                    this.generateNextActions();
+                }
             }
             else{
                 throw new PreconditionViolationException("Response must be processed before another action can be taken.");
@@ -82,7 +85,7 @@ public class Decider implements DecisionGenerator{
             }
         }
         this.lastAction = this.decisionQueue.get(this.currentStep);
-        decision=this.computeDecision(this.lastAction);
+        JSONObject decision=this.computeDecision(this.lastAction);
         this.currentStep++;
 
         logger.info("** Decision: {}", decision.toString());
@@ -98,6 +101,7 @@ public class Decider implements DecisionGenerator{
         switch(this.lastAction){
             case ECHO_FRONT,ECHO_LEFT,ECHO_RIGHT-> this.radarInterpreter.saveEchoResult(this.results.get(currentStep-1));
             case SCAN -> this.scanInterpreter.saveScan(results.get(currentStep-1));
+            default -> {}
         }
         this.ready=true;
     }

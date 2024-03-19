@@ -39,7 +39,7 @@ class DroneTest {
     @Test
     void testTurnRight() {
         String turnJson = "{\"cost\":5, \"status\":\"OK\", \"extras\":{}}";
-        Result turnRightResult = new Result(turnJson,Action.FLY);
+        Result turnRightResult = new Result(turnJson,Action.TURN_RIGHT);
 
         drone.processResults(turnRightResult);
 

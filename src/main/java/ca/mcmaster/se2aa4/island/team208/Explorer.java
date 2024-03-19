@@ -17,8 +17,7 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public void initialize(String s) {
-        this.decider.initialize(s);
-
+        this.decider.initialize(s,0,0);
     }
 
     @Override

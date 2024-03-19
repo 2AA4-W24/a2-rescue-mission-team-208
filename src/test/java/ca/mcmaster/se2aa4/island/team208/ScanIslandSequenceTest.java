@@ -28,7 +28,7 @@ public class ScanIslandSequenceTest {
         scanner = new ScanInterpreter(); 
         map = new IslandMap(new Position(0, 0));
 
-        sequence = new ScanIslandSequence(results, drone, radar, scanner, map);
+        sequence = new ScanIslandSequence(drone, radar, scanner, map);
         decisionQueue = new ArrayList<>();
     }
 

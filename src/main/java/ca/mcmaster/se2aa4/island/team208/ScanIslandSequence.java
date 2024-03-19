@@ -8,7 +8,6 @@ import org.junit.platform.commons.PreconditionViolationException;
 import java.util.List;
 
 public class ScanIslandSequence implements ActionSequence{
-    private List<Result> results;
     private Drone drone;
     private RadarInterpreter radar;
     private ScanInterpreter scanner;
@@ -26,8 +25,7 @@ public class ScanIslandSequence implements ActionSequence{
 
     //this scans all parts of Island South-East of position of first call to "setNextDecision(List <Action>)"
     //must be facing south
-    public ScanIslandSequence(List<Result> results, Drone drone, RadarInterpreter radar, ScanInterpreter scanner, IslandMap map){
-        this.results = results;
+    public ScanIslandSequence(Drone drone, RadarInterpreter radar, ScanInterpreter scanner, IslandMap map){
         this.drone = drone;
         this.radar = radar;
         this.scanner = scanner;
@@ -91,7 +89,7 @@ public class ScanIslandSequence implements ActionSequence{
                         decisionQueue.add(Action.SCAN);
                         logger.info("CLOSEST CREEK: " + this.map.getClosestCreek());
                         logger.info("Emergency Site: " + this.map.getSite());
-                        decisionQueue.add(Action.STOP);
+                        this.completed=true;
                     }
 
                 } else if (this.radar.getFound().equals("GROUND")) {
