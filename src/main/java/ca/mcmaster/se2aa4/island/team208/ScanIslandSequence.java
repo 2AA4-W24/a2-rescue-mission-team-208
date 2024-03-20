@@ -93,6 +93,7 @@ public class ScanIslandSequence implements ActionSequence{
                         this.secondFly = true;
                     } else {
                         decisionQueue.add(Action.SCAN);
+                        logger.info("CREEKS: " + this.map.getCreeks());
                         logger.info("CLOSEST CREEK: " + this.map.getClosestCreek());
                         logger.info("Emergency Site: " + this.map.getSite());
                         this.completed=true;
