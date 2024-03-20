@@ -47,7 +47,13 @@ public class ScanIslandSequence implements ActionSequence{
                 || decisionQueue.get(decisionQueue.size() - 1) == Action.FLY) {
                 JSONArray creeks = this.scanner.getCreeks();
                 JSONArray sites = this.scanner.getSites();
-                decisionQueue.add(Action.ECHO_FRONT);
+                if (!this.scanner.isOceanOnly()) {
+                    decisionQueue.add(Action.FLY);
+                    decisionQueue.add(Action.SCAN);
+                } else {
+                    decisionQueue.add(Action.ECHO_FRONT);
+                }
+
                 if (!creeks.isEmpty()) {
                     this.map.addCreek(new Creek(creeks.get(0).toString(),
                             new Position(this.drone.getX(), this.drone.getY())));
@@ -93,8 +99,10 @@ public class ScanIslandSequence implements ActionSequence{
                     }
 
                 } else if (this.radar.getFound().equals("GROUND")) {
+                    for (int i = 0; i < this.radar.getRange(); i++) decisionQueue.add(Action.FLY);
+                    decisionQueue.add(Action.SCAN);
                     decisionQueue.add(Action.FLY);
-                    if(this.radar.getRange() <= 1) decisionQueue.add(Action.SCAN);
+                    decisionQueue.add(Action.SCAN);
                 } else {
                     switch (this.drone.getDirection()) {
                         case S -> decisionQueue.add(this.southEcho);
@@ -133,7 +141,7 @@ public class ScanIslandSequence implements ActionSequence{
             }
             else{
                 this.started = true;
-                decisionQueue.add(Action.ECHO_FRONT);
+                decisionQueue.add(Action.SCAN);
             }
         }
 

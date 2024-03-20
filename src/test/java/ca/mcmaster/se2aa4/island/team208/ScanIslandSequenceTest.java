@@ -36,7 +36,7 @@ public class ScanIslandSequenceTest {
     void testInitialDecisionFacingSouth() {
         sequence.generateNextActions(decisionQueue);
         assertFalse(decisionQueue.isEmpty(), "Decision queue should not be empty after the first decision.");
-        assertEquals(Action.ECHO_FRONT, decisionQueue.get(0), "The first action should be ECHO_FRONT when starting facing South.");
+        assertEquals(Action.SCAN, decisionQueue.get(0), "The first action should be SCAN.");
     }
 
     void testReactionToScanFindingCreek() {
