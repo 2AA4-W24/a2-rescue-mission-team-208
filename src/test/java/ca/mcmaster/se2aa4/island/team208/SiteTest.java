@@ -1,5 +1,7 @@
 package ca.mcmaster.se2aa4.island.team208;
 
+import ca.mcmaster.se2aa4.island.team208.MapTools.Position;
+import ca.mcmaster.se2aa4.island.team208.Records.Site;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;

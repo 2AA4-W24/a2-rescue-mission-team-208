@@ -1,4 +1,7 @@
-package ca.mcmaster.se2aa4.island.team208;
+package ca.mcmaster.se2aa4.island.team208.MapTools;
+
+import ca.mcmaster.se2aa4.island.team208.Records.Creek;
+import ca.mcmaster.se2aa4.island.team208.Records.Site;
 
 import java.util.List;
 

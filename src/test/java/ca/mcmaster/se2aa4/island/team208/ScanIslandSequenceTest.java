@@ -1,4 +1,12 @@
 package ca.mcmaster.se2aa4.island.team208;
+import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.ScanIslandSequenceFactory;
+import ca.mcmaster.se2aa4.island.team208.Enums.Action;
+import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision.Result;
+import ca.mcmaster.se2aa4.island.team208.Interpreters.RadarInterpreter;
+import ca.mcmaster.se2aa4.island.team208.Interpreters.ScanInterpreter;
+import ca.mcmaster.se2aa4.island.team208.MapTools.Drone;
+import ca.mcmaster.se2aa4.island.team208.MapTools.IslandMap;
+import ca.mcmaster.se2aa4.island.team208.MapTools.Position;
 import org.json.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +16,7 @@ import java.util.List;
 
 public class ScanIslandSequenceTest {
 
-    private ScanIslandSequence sequence;
+    private ScanIslandSequenceFactory sequence;
     private List<Action> decisionQueue;
     private List<Result> results;
     private Drone drone;
@@ -28,7 +36,7 @@ public class ScanIslandSequenceTest {
         scanner = new ScanInterpreter(); 
         map = new IslandMap(new Position(0, 0));
 
-        sequence = new ScanIslandSequence(drone, radar, scanner, map);
+        sequence = new ScanIslandSequenceFactory(drone, radar, scanner, map);
         decisionQueue = new ArrayList<>();
     }
 

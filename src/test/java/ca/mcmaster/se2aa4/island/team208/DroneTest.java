@@ -1,4 +1,8 @@
 package ca.mcmaster.se2aa4.island.team208;
+import ca.mcmaster.se2aa4.island.team208.Enums.Action;
+import ca.mcmaster.se2aa4.island.team208.Enums.Direction;
+import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision.Result;
+import ca.mcmaster.se2aa4.island.team208.MapTools.Drone;
 import org.json.JSONObject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +31,7 @@ class DroneTest {
     @Test
     void testFlyAndUpdateBattery() {
         String flyJson = "{\"cost\":10, \"status\":\"OK\", \"extras\":{}}";
-        Result flyResult = new Result(flyJson,Action.FLY); // Using step count 1 for simplicity
+        Result flyResult = new Result(flyJson, Action.FLY); // Using step count 1 for simplicity
 
         drone.processResults(flyResult);
         

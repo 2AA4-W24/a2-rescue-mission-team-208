@@ -1,5 +1,15 @@
-package ca.mcmaster.se2aa4.island.team208;
+package ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision;
 
+import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.ActionSequenceFactory;
+import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.FindIslandSequenceFactory;
+import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.ScanIslandSequenceFactory;
+import ca.mcmaster.se2aa4.island.team208.Enums.Action;
+import ca.mcmaster.se2aa4.island.team208.Enums.Direction;
+import ca.mcmaster.se2aa4.island.team208.Interpreters.RadarInterpreter;
+import ca.mcmaster.se2aa4.island.team208.Interpreters.ScanInterpreter;
+import ca.mcmaster.se2aa4.island.team208.MapTools.Drone;
+import ca.mcmaster.se2aa4.island.team208.MapTools.IslandMap;
+import ca.mcmaster.se2aa4.island.team208.MapTools.Position;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -15,11 +25,11 @@ import java.util.*;
 
  */
 
-public class Decider implements DecisionGenerator{
+public class Decider implements DecisionGenerator {
 
     private final Logger logger = LogManager.getLogger();
 
-    private final Queue<ActionSequence> stageQueue;
+    private final Queue<ActionSequenceFactory> stageQueue;
     private final List<Action> decisionQueue;
     private final List<Result> results;
 
@@ -28,7 +38,7 @@ public class Decider implements DecisionGenerator{
     private final ScanInterpreter scanInterpreter;
     private final IslandMap map;
 
-    private ActionSequence currentStage;
+    private ActionSequenceFactory currentStage;
     private Action lastAction;
     private Integer currentStep; //next step that needs to be executed
     private boolean ready;
@@ -61,8 +71,8 @@ public class Decider implements DecisionGenerator{
     }
 
     private void selectSearchStages() {
-        this.stageQueue.add(new FindIslandSequence(this.radarInterpreter, this.results));
-        this.stageQueue.add(new ScanIslandSequence(
+        this.stageQueue.add(new FindIslandSequenceFactory(this.radarInterpreter, this.results));
+        this.stageQueue.add(new ScanIslandSequenceFactory(
                 this.drone, this.radarInterpreter, this.scanInterpreter, this.map));
 
         this.currentStage = this.stageQueue.remove();
@@ -132,7 +142,7 @@ public class Decider implements DecisionGenerator{
         step.put("action", action.toString());
         switch(action){
             case TURN_LEFT, ECHO_LEFT -> {
-                step.put("parameters", new JSONObject().put("direction",Direction.getLeft(drone.getDirection()).toString()));
+                step.put("parameters", new JSONObject().put("direction", Direction.getLeft(drone.getDirection()).toString()));
             }
             case TURN_RIGHT, ECHO_RIGHT -> {
                 step.put("parameters", new JSONObject().put("direction",Direction.getRight(drone.getDirection()).toString()));
