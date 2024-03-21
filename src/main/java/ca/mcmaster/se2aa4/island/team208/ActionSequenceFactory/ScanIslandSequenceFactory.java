@@ -7,6 +7,10 @@ import ca.mcmaster.se2aa4.island.team208.Interpreters.RadarInterpreter;
 import ca.mcmaster.se2aa4.island.team208.Interpreters.ScanInterpreter;
 import ca.mcmaster.se2aa4.island.team208.MapTools.Drone;
 import ca.mcmaster.se2aa4.island.team208.MapTools.IslandMap;
+import ca.mcmaster.se2aa4.island.team208.MapTools.Position;
+import ca.mcmaster.se2aa4.island.team208.Records.Creek;
+import ca.mcmaster.se2aa4.island.team208.Records.Site;
+import org.json.JSONArray;
 import org.junit.platform.commons.PreconditionViolationException;
 
 import java.util.HashMap;
@@ -32,7 +36,7 @@ public class ScanIslandSequenceFactory implements ActionSequenceFactory {
         this.radar = radar;
         this.scanner = scanner;
         this.map = map;
-        this.scanSeq = new ScanIslandScanFlyActions(this.map, this.drone);
+        this.scanSeq = new ScanIslandScanFlyActions();
         this.echoFrontSeq = new ScanIslandEchoFrontActions(this.map, this.drone);
         this.started=false;
         this.completed=false;
@@ -41,8 +45,6 @@ public class ScanIslandSequenceFactory implements ActionSequenceFactory {
     @Override
     public void generateNextActions(List<Action> decisionQueue) {
         if(this.started && !this.completed) {
-            this.scanSeq.updateMap(this.map);
-            this.scanSeq.updateDrone(this.drone);
             this.echoFrontSeq.updateMap(this.map);
             this.echoFrontSeq.updateDrone(this.drone);
             Map<Action, ActionFactory> mapActionSeq = new HashMap<>();
@@ -57,7 +59,6 @@ public class ScanIslandSequenceFactory implements ActionSequenceFactory {
                             this.echoFrontSeq.getNorthTurn()));
             mapActionSeq.get(decisionQueue.get(decisionQueue.size() - 1))
                     .addActions(decisionQueue, this.radar, this.scanner);
-            this.map = this.scanSeq.getUpdatedMap();
             this.completed = this.echoFrontSeq.lastAction();
         } else{
             if(!this.drone.getDirection().equals(Direction.S)){

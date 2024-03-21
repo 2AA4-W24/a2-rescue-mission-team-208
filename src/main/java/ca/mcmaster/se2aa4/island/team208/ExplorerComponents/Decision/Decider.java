@@ -10,8 +10,11 @@ import ca.mcmaster.se2aa4.island.team208.Interpreters.ScanInterpreter;
 import ca.mcmaster.se2aa4.island.team208.MapTools.Drone;
 import ca.mcmaster.se2aa4.island.team208.MapTools.IslandMap;
 import ca.mcmaster.se2aa4.island.team208.MapTools.Position;
+import ca.mcmaster.se2aa4.island.team208.Records.Creek;
+import ca.mcmaster.se2aa4.island.team208.Records.Site;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.platform.commons.PreconditionViolationException;
 
@@ -112,6 +115,18 @@ public class Decider implements DecisionGenerator {
             case ECHO_FRONT,ECHO_LEFT,ECHO_RIGHT-> this.radarInterpreter.saveEchoResult(this.results.get(currentStep-1));
             case SCAN -> this.scanInterpreter.saveScan(results.get(currentStep-1));
         }
+        if (this.lastAction == Action.SCAN) {
+            JSONArray creeks = this.scanInterpreter.getCreeks();
+            JSONArray sites = this.scanInterpreter.getSites();
+            if (!(creeks.isEmpty()) && decisionQueue.get(decisionQueue.size() - 1) == Action.SCAN) {
+                this.map.addCreek(new Creek(creeks.get(0).toString(),
+                        new Position(this.drone.getX(), this.drone.getY())));
+            }
+            if (!(sites.isEmpty()) && decisionQueue.get(decisionQueue.size() - 1) == Action.SCAN) {
+                this.map.setSite(new Site(sites.get(0).toString(),
+                        new Position(this.drone.getX(), this.drone.getY())));
+            }
+        }
         this.ready=true;
     }
 
@@ -127,15 +142,16 @@ public class Decider implements DecisionGenerator {
         //exploring has been completed
         if(this.currentStage==null || this.drone.getBattery() < this.drone.getStopCost()){
             this.decisionQueue.add(Action.STOP);
-            logger.info("CREEKS: " + this.map.getCreeks());
-            logger.info("CLOSEST CREEK: " + this.map.getClosestCreek());
-            logger.info("Emergency Site: " + this.map.getSite());
         }
 
         //current stage has not been completed
         else{
             this.currentStage.generateNextActions(this.decisionQueue);
         }
+
+        logger.info("CREEKS: " + this.map.getCreeks());
+        logger.info("CLOSEST CREEK: " + this.map.getClosestCreek());
+        logger.info("Emergency Site: " + this.map.getSite());
     }
 
     //this is done when decision is about to be performed
