@@ -81,6 +81,6 @@ public class Drone {
             throw new NullPointerException(uninitializedMessage);
         }
         //value arrived at after multiple tests
-        return 20;
+        return 50;
     }
 }

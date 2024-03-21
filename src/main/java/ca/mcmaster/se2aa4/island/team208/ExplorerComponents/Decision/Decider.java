@@ -125,8 +125,11 @@ public class Decider implements DecisionGenerator {
         }
 
         //exploring has been completed
-        if(this.currentStage==null){
+        if(this.currentStage==null || this.drone.getBattery() < this.drone.getStopCost()){
             this.decisionQueue.add(Action.STOP);
+            logger.info("CREEKS: " + this.map.getCreeks());
+            logger.info("CLOSEST CREEK: " + this.map.getClosestCreek());
+            logger.info("Emergency Site: " + this.map.getSite());
         }
 
         //current stage has not been completed
@@ -159,6 +162,6 @@ public class Decider implements DecisionGenerator {
         return this.lastAction;
     }
     public String getReport() {
-        return new Report(this.map.getClosestCreek()).toString();
+        return (new Report(this.map.getClosestCreek())).toString();
     }
 }

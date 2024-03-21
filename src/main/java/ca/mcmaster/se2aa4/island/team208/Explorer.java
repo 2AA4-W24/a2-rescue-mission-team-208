@@ -35,6 +35,7 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String deliverFinalReport() {
+        logger.info(this.decider.getReport());
         return this.decider.getReport();
     }
 
