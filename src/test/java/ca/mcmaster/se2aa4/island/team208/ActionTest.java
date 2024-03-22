@@ -1,5 +1,6 @@
 package ca.mcmaster.se2aa4.island.team208;
 
+import ca.mcmaster.se2aa4.island.team208.Enums.Action;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;

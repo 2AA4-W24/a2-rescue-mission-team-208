@@ -1,7 +1,10 @@
 package ca.mcmaster.se2aa4.island.team208;
-import org.json.JSONObject;
+import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision.Report;
+import ca.mcmaster.se2aa4.island.team208.MapTools.Position;
+import ca.mcmaster.se2aa4.island.team208.Records.Creek;
+
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 
 public class ReportTest {

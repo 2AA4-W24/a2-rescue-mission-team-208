@@ -1,5 +1,6 @@
-package ca.mcmaster.se2aa4.island.team208;
+package ca.mcmaster.se2aa4.island.team208.Interpreters;
 
+import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision.Result;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,14 +19,11 @@ public class ScanInterpreter {
     }
     public void saveScan(Result scan){
         this.lastScan=scan;
-
         try{
             JSONObject extras=this.lastScan.getExtras();
-
             this.creeks = extras.getJSONArray("creeks");
             this.biomes = extras.getJSONArray("biomes");
             this.sites = extras.getJSONArray("sites");
-
         }catch (JSONException e){
             throw new IllegalArgumentException("Argument must be an Scan Result as a JSONObject.");
         }

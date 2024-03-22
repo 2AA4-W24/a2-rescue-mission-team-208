@@ -1,8 +1,11 @@
-package ca.mcmaster.se2aa4.island.team208;
+package ca.mcmaster.se2aa4.island.team208.MapTools;
+
+import ca.mcmaster.se2aa4.island.team208.Records.Creek;
+import ca.mcmaster.se2aa4.island.team208.Records.Site;
 
 import java.util.ArrayList;
 
-public class IslandMap implements Map{
+public class IslandMap implements Map {
     private final ArrayList<Creek> creeks;
     private final Position start;
     private Creek closestCreek;
@@ -39,14 +42,20 @@ public class IslandMap implements Map{
 
     @Override
     public Creek getClosestCreek() {
-        if (this.site != null && !(this.creeks.isEmpty())) {
-            for (Creek creek : this.creeks) {
-                double newDistance = Position.getDistance(creek.pos(), this.site.pos());
-                if (distance > newDistance) {
-                    distance = newDistance;
-                    this.closestCreek = creek;
+        if(!(this.creeks.isEmpty())) {
+            if (this.site != null) {
+                for (Creek creek : this.creeks) {
+                    double newDistance = Position.getDistance(creek.pos(), this.site.pos());
+                    if (this.distance > newDistance) {
+                        this.distance = newDistance;
+                        this.closestCreek = creek;
+                    }
                 }
+            } else {
+                this.closestCreek = this.creeks.get(0);
             }
+        } else {
+            this.closestCreek = null;
         }
         return this.closestCreek;
     }

@@ -1,7 +1,20 @@
-package ca.mcmaster.se2aa4.island.team208;
+package ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision;
 
+import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.ActionSequenceFactory;
+import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.FindIslandSequenceFactory;
+import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.ScanIslandSequenceFactory;
+import ca.mcmaster.se2aa4.island.team208.Enums.Action;
+import ca.mcmaster.se2aa4.island.team208.Enums.Direction;
+import ca.mcmaster.se2aa4.island.team208.Interpreters.RadarInterpreter;
+import ca.mcmaster.se2aa4.island.team208.Interpreters.ScanInterpreter;
+import ca.mcmaster.se2aa4.island.team208.MapTools.Drone;
+import ca.mcmaster.se2aa4.island.team208.MapTools.IslandMap;
+import ca.mcmaster.se2aa4.island.team208.MapTools.Position;
+import ca.mcmaster.se2aa4.island.team208.Records.Creek;
+import ca.mcmaster.se2aa4.island.team208.Records.Site;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.platform.commons.PreconditionViolationException;
 
@@ -15,11 +28,11 @@ import java.util.*;
 
  */
 
-public class Decider implements DecisionGenerator{
+public class Decider implements DecisionGenerator {
 
     private final Logger logger = LogManager.getLogger();
 
-    private final Queue<ActionSequence> stageQueue;
+    private final Queue<ActionSequenceFactory> stageQueue;
     private final List<Action> decisionQueue;
     private final List<Result> results;
 
@@ -28,7 +41,7 @@ public class Decider implements DecisionGenerator{
     private final ScanInterpreter scanInterpreter;
     private final IslandMap map;
 
-    private ActionSequence currentStage;
+    private ActionSequenceFactory currentStage;
     private Action lastAction;
     private Integer currentStep; //next step that needs to be executed
     private boolean ready;
@@ -61,8 +74,8 @@ public class Decider implements DecisionGenerator{
     }
 
     private void selectSearchStages() {
-        this.stageQueue.add(new FindIslandSequence(this.radarInterpreter, this.results));
-        this.stageQueue.add(new ScanIslandSequence(
+        this.stageQueue.add(new FindIslandSequenceFactory(this.radarInterpreter, this.results));
+        this.stageQueue.add(new ScanIslandSequenceFactory(
                 this.drone, this.radarInterpreter, this.scanInterpreter, this.map));
 
         this.currentStage = this.stageQueue.remove();
@@ -102,6 +115,18 @@ public class Decider implements DecisionGenerator{
             case ECHO_FRONT,ECHO_LEFT,ECHO_RIGHT-> this.radarInterpreter.saveEchoResult(this.results.get(currentStep-1));
             case SCAN -> this.scanInterpreter.saveScan(results.get(currentStep-1));
         }
+        if (this.lastAction == Action.SCAN) {
+            JSONArray creeks = this.scanInterpreter.getCreeks();
+            JSONArray sites = this.scanInterpreter.getSites();
+            if (!(creeks.isEmpty()) && decisionQueue.get(decisionQueue.size() - 1) == Action.SCAN) {
+                this.map.addCreek(new Creek(creeks.get(0).toString(),
+                        new Position(this.drone.getX(), this.drone.getY())));
+            }
+            if (!(sites.isEmpty()) && decisionQueue.get(decisionQueue.size() - 1) == Action.SCAN) {
+                this.map.setSite(new Site(sites.get(0).toString(),
+                        new Position(this.drone.getX(), this.drone.getY())));
+            }
+        }
         this.ready=true;
     }
 
@@ -115,7 +140,7 @@ public class Decider implements DecisionGenerator{
         }
 
         //exploring has been completed
-        if(this.currentStage==null){
+        if(this.currentStage==null || this.drone.getBattery() < this.drone.getStopCost()){
             this.decisionQueue.add(Action.STOP);
         }
 
@@ -123,6 +148,10 @@ public class Decider implements DecisionGenerator{
         else{
             this.currentStage.generateNextActions(this.decisionQueue);
         }
+
+        logger.info("CREEKS: " + this.map.getCreeks());
+        logger.info("CLOSEST CREEK: " + this.map.getClosestCreek());
+        logger.info("Emergency Site: " + this.map.getSite());
     }
 
     //this is done when decision is about to be performed
@@ -132,7 +161,7 @@ public class Decider implements DecisionGenerator{
         step.put("action", action.toString());
         switch(action){
             case TURN_LEFT, ECHO_LEFT -> {
-                step.put("parameters", new JSONObject().put("direction",Direction.getLeft(drone.getDirection()).toString()));
+                step.put("parameters", new JSONObject().put("direction", Direction.getLeft(drone.getDirection()).toString()));
             }
             case TURN_RIGHT, ECHO_RIGHT -> {
                 step.put("parameters", new JSONObject().put("direction",Direction.getRight(drone.getDirection()).toString()));
@@ -149,6 +178,6 @@ public class Decider implements DecisionGenerator{
         return this.lastAction;
     }
     public String getReport() {
-        return new Report(this.map.getClosestCreek()).toString();
+        return (new Report(this.map.getClosestCreek())).toString();
     }
 }

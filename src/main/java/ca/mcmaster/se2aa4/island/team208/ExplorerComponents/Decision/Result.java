@@ -1,5 +1,6 @@
-package ca.mcmaster.se2aa4.island.team208;
+package ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision;
 
+import ca.mcmaster.se2aa4.island.team208.Enums.Action;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
@@ -20,14 +21,12 @@ public class Result {
 
     public Result(String response, Action lastAction) throws IllegalArgumentException{
         this.action=lastAction;
-
         try{
             this.response = new JSONObject(new JSONTokener(new StringReader(response)));
         }
         catch(JSONException e){
             throw new IllegalArgumentException("Input must be a String in JSON format.");
         }
-
         this.cost = this.response.getInt("cost");
         this.status = this.response.getString("status");
         this.extras = this.response.getJSONObject("extras");

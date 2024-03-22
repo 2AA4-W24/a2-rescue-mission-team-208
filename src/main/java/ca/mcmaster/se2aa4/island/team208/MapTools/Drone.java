@@ -1,5 +1,8 @@
-package ca.mcmaster.se2aa4.island.team208;
+package ca.mcmaster.se2aa4.island.team208.MapTools;
 
+import ca.mcmaster.se2aa4.island.team208.Enums.Action;
+import ca.mcmaster.se2aa4.island.team208.Enums.Direction;
+import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision.Result;
 import org.json.JSONObject;
 
 public class Drone {
@@ -78,6 +81,6 @@ public class Drone {
             throw new NullPointerException(uninitializedMessage);
         }
         //value arrived at after multiple tests
-        return 20;
+        return 50;
     }
 }
