@@ -1,7 +1,7 @@
 package ca.mcmaster.se2aa4.island.team208.Interpreters;
 
 import ca.mcmaster.se2aa4.island.team208.Enums.Direction;
-import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision.Result;
+import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Result;
 import org.json.JSONException;
 import org.json.JSONObject;
 

@@ -1,4 +1,4 @@
-package ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision;
+package ca.mcmaster.se2aa4.island.team208.ExplorerComponents;
 
 import ca.mcmaster.se2aa4.island.team208.Enums.Action;
 import org.apache.logging.log4j.LogManager;

@@ -1,6 +1,6 @@
 package ca.mcmaster.se2aa4.island.team208;
 
-import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision.Configuration;
+import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Configuration;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;

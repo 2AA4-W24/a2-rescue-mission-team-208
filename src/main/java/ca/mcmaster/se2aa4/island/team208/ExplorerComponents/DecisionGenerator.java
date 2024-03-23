@@ -1,4 +1,4 @@
-package ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision;
+package ca.mcmaster.se2aa4.island.team208.ExplorerComponents;
 
 public interface DecisionGenerator {
     void initialize(String setup, int xStart, int yStart);
