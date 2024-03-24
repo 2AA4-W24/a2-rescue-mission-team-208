@@ -4,7 +4,6 @@ import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.ActionSequenceFac
 import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.FindIslandSequenceFactory;
 import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.ScanIslandSequenceFactory;
 import ca.mcmaster.se2aa4.island.team208.Enums.Action;
-import ca.mcmaster.se2aa4.island.team208.Enums.Direction;
 import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.DecisionFacade.ActionFacade;
 import ca.mcmaster.se2aa4.island.team208.Interpreters.RadarInterpreter;
 import ca.mcmaster.se2aa4.island.team208.Interpreters.ScanInterpreter;
@@ -68,6 +67,7 @@ public class Decider implements DecisionGenerator {
         this.ready=true;
     }
 
+    @Override
     public void initialize(String s, int x, int y) {
         Configuration config = new Configuration(s);
         this.drone.initializeDrone(config.getInfo(), x, y);
@@ -75,14 +75,14 @@ public class Decider implements DecisionGenerator {
     }
 
     private void selectSearchStages() {
-        this.stageQueue.add(new FindIslandSequenceFactory(this.radarInterpreter, this.results));
+        this.stageQueue.add(new FindIslandSequenceFactory(this.radarInterpreter));
         this.stageQueue.add(new ScanIslandSequenceFactory(
                 this.drone, this.radarInterpreter, this.scanInterpreter, this.map));
 
         this.currentStage = this.stageQueue.remove();
     }
 
-
+    @Override
     public String getNextStep(){
         if (this.currentStep >= decisionQueue.size()) {
             if(this.ready){
@@ -109,6 +109,7 @@ public class Decider implements DecisionGenerator {
         return decision.toString();
     }
 
+    @Override
     public void processResults(String s) {
         this.results.add(new Result(s, this.lastAction));
         this.drone.processResults(this.results.get(this.currentStep-1));
@@ -164,6 +165,7 @@ public class Decider implements DecisionGenerator {
     public Action getLastAction() {
         return this.lastAction;
     }
+    @Override
     public String getReport() {
         return (new Report(this.map.getClosestCreek())).toString();
     }

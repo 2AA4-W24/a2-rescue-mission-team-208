@@ -60,7 +60,4 @@ public class IslandMap implements Map {
         return this.closestCreek;
     }
 
-    public Position getStart() {
-        return this.start;
-    }
 }

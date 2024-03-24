@@ -7,10 +7,6 @@ import ca.mcmaster.se2aa4.island.team208.Interpreters.RadarInterpreter;
 import ca.mcmaster.se2aa4.island.team208.Interpreters.ScanInterpreter;
 import ca.mcmaster.se2aa4.island.team208.MapTools.Drone;
 import ca.mcmaster.se2aa4.island.team208.MapTools.IslandMap;
-import ca.mcmaster.se2aa4.island.team208.MapTools.Position;
-import ca.mcmaster.se2aa4.island.team208.Records.Creek;
-import ca.mcmaster.se2aa4.island.team208.Records.Site;
-import org.json.JSONArray;
 import org.junit.platform.commons.PreconditionViolationException;
 
 import java.util.HashMap;
@@ -37,7 +33,7 @@ public class ScanIslandSequenceFactory implements ActionSequenceFactory {
         this.scanner = scanner;
         this.map = map;
         this.scanSeq = new ScanIslandScanFlyActions();
-        this.echoFrontSeq = new ScanIslandEchoFrontActions(this.map, this.drone);
+        this.echoFrontSeq = new ScanIslandEchoFrontActions(this.drone);
         this.started=false;
         this.completed=false;
     }
@@ -45,8 +41,6 @@ public class ScanIslandSequenceFactory implements ActionSequenceFactory {
     @Override
     public void generateNextActions(List<Action> decisionQueue) {
         if(this.started && !this.completed) {
-            this.echoFrontSeq.updateMap(this.map);
-            this.echoFrontSeq.updateDrone(this.drone);
             Map<Action, ActionFactory> mapActionSeq = new HashMap<>();
             mapActionSeq.put(Action.SCAN, this.scanSeq);
             mapActionSeq.put(Action.FLY, this.scanSeq);
@@ -69,7 +63,6 @@ public class ScanIslandSequenceFactory implements ActionSequenceFactory {
                 decisionQueue.add(Action.SCAN);
             }
         }
-
     }
 
     @Override

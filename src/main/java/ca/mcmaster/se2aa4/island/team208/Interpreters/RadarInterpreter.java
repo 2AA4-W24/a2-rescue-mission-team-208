@@ -1,26 +1,19 @@
 package ca.mcmaster.se2aa4.island.team208.Interpreters;
 
-import ca.mcmaster.se2aa4.island.team208.Enums.Direction;
 import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Result;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RadarInterpreter {
-    public static final String OUT_OF_RANGE = "OUT_OF_RANGE";
-    public static final String GROUND = "GROUND";
 
-    private Result lastEcho;
     private int range;
     private String found;
-    private Direction lastEchoDirection;
 
     public RadarInterpreter(){
-        this.lastEcho = null;
         this.range=-1; //-1 symbolizes no echo being performed
         this.found="";
     }
     public void saveEchoResult(Result echoResult) {
-        this.lastEcho = echoResult;
 
         // Interpret echo results and update the map accordingly
         try{

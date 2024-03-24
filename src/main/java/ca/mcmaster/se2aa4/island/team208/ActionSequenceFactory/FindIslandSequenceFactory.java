@@ -11,14 +11,12 @@ import java.util.Map;
 
 public class FindIslandSequenceFactory implements ActionSequenceFactory {
     private RadarInterpreter radarInterpreter;
-    private List<Result>results;
     private boolean completed;
     private final static Map<Action, ActionFactory> mapActionSeq = new HashMap<>();
 
 
-    public FindIslandSequenceFactory(RadarInterpreter radar, List<Result>results){
+    public FindIslandSequenceFactory(RadarInterpreter radar){
         this.radarInterpreter=radar;
-        this.results = results;
         this.completed=false;
         mapActionSeq.put(Action.FLY, new FindIslandFlyActions());
         mapActionSeq.put(Action.ECHO_RIGHT, new FindIslandEchoRightActions());
@@ -27,13 +25,13 @@ public class FindIslandSequenceFactory implements ActionSequenceFactory {
     }
     @Override
     public void generateNextActions(List<Action> decisionQueue) {
-        if (this.results.size() - 1 == 0) {
+        if (decisionQueue.size() - 1 == 0) {
             decisionQueue.add(Action.ECHO_RIGHT);
             return;
         }
-        mapActionSeq.get(decisionQueue.get(this.results.size() - 1))
+        mapActionSeq.get(decisionQueue.get(decisionQueue.size() - 1))
                 .addActions(decisionQueue, this.radarInterpreter, null);
-        this.completed = mapActionSeq.get(decisionQueue.get(this.results.size() - 1))
+        this.completed = mapActionSeq.get(decisionQueue.get(decisionQueue.size() - 1))
                 .lastAction();
     }
 

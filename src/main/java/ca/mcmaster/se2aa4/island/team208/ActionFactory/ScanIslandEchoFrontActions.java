@@ -2,7 +2,6 @@ package ca.mcmaster.se2aa4.island.team208.ActionFactory;
 
 import ca.mcmaster.se2aa4.island.team208.MapTools.Drone;
 import ca.mcmaster.se2aa4.island.team208.Enums.Action;
-import ca.mcmaster.se2aa4.island.team208.MapTools.IslandMap;
 import ca.mcmaster.se2aa4.island.team208.Interpreters.RadarInterpreter;
 import ca.mcmaster.se2aa4.island.team208.Interpreters.ScanInterpreter;
 import org.apache.logging.log4j.LogManager;
@@ -11,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 public class ScanIslandEchoFrontActions implements ActionFactory {
-    private IslandMap map;
+
     private boolean completed;
     private Drone drone;
     private boolean secondFly;
@@ -20,9 +19,7 @@ public class ScanIslandEchoFrontActions implements ActionFactory {
     private Action northEcho;
     private Action southEcho;
 
-    private Logger logger = LogManager.getLogger();
-    public ScanIslandEchoFrontActions (IslandMap map, Drone drone) {
-        this.map = map;
+    public ScanIslandEchoFrontActions (Drone drone) {
         this.drone = drone;
         this.secondFly = false;
         this.completed = false;
@@ -30,12 +27,6 @@ public class ScanIslandEchoFrontActions implements ActionFactory {
         this.southTurn = Action.TURN_LEFT;
         this.northEcho = Action.ECHO_RIGHT;
         this.southEcho = Action.ECHO_LEFT;
-    }
-    public void updateMap(IslandMap map) {
-        this.map = map;
-    }
-    public void updateDrone(Drone drone) {
-        this.drone = drone;
     }
     public Action getNorthTurn() {
         return this.northTurn;
