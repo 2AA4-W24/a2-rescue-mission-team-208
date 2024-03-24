@@ -1,4 +1,4 @@
-package ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision;
+package ca.mcmaster.se2aa4.island.team208.ExplorerComponents;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

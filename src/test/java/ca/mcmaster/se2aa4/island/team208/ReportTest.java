@@ -1,5 +1,5 @@
 package ca.mcmaster.se2aa4.island.team208;
-import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision.Report;
+import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Report;
 import ca.mcmaster.se2aa4.island.team208.MapTools.Position;
 import ca.mcmaster.se2aa4.island.team208.Records.Creek;
 

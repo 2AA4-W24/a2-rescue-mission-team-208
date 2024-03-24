@@ -2,7 +2,7 @@ package ca.mcmaster.se2aa4.island.team208;
 import static org.junit.jupiter.api.Assertions.*;
 
 import ca.mcmaster.se2aa4.island.team208.Enums.Action;
-import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision.Result;
+import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Result;
 import ca.mcmaster.se2aa4.island.team208.Interpreters.RadarInterpreter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

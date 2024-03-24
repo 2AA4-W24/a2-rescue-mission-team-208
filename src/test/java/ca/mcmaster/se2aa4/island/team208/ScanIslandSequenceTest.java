@@ -1,7 +1,7 @@
 package ca.mcmaster.se2aa4.island.team208;
 import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.ScanIslandSequenceFactory;
 import ca.mcmaster.se2aa4.island.team208.Enums.Action;
-import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision.Result;
+import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Result;
 import ca.mcmaster.se2aa4.island.team208.Interpreters.RadarInterpreter;
 import ca.mcmaster.se2aa4.island.team208.Interpreters.ScanInterpreter;
 import ca.mcmaster.se2aa4.island.team208.MapTools.Drone;

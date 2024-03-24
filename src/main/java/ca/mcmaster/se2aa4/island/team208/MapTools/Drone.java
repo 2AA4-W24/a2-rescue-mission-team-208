@@ -2,7 +2,7 @@ package ca.mcmaster.se2aa4.island.team208.MapTools;
 
 import ca.mcmaster.se2aa4.island.team208.Enums.Action;
 import ca.mcmaster.se2aa4.island.team208.Enums.Direction;
-import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision.Result;
+import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Result;
 import org.json.JSONObject;
 
 public class Drone {

@@ -1,10 +1,11 @@
-package ca.mcmaster.se2aa4.island.team208.ExplorerComponents.Decision;
+package ca.mcmaster.se2aa4.island.team208.ExplorerComponents;
 
 import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.ActionSequenceFactory;
 import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.FindIslandSequenceFactory;
 import ca.mcmaster.se2aa4.island.team208.ActionSequenceFactory.ScanIslandSequenceFactory;
 import ca.mcmaster.se2aa4.island.team208.Enums.Action;
 import ca.mcmaster.se2aa4.island.team208.Enums.Direction;
+import ca.mcmaster.se2aa4.island.team208.ExplorerComponents.DecisionFacade.ActionFacade;
 import ca.mcmaster.se2aa4.island.team208.Interpreters.RadarInterpreter;
 import ca.mcmaster.se2aa4.island.team208.Interpreters.ScanInterpreter;
 import ca.mcmaster.se2aa4.island.team208.MapTools.Drone;
@@ -156,22 +157,8 @@ public class Decider implements DecisionGenerator {
 
     //this is done when decision is about to be performed
     private JSONObject computeDecision(Action action){
-        JSONObject step = new JSONObject();
-
-        step.put("action", action.toString());
-        switch(action){
-            case TURN_LEFT, ECHO_LEFT -> {
-                step.put("parameters", new JSONObject().put("direction", Direction.getLeft(drone.getDirection()).toString()));
-            }
-            case TURN_RIGHT, ECHO_RIGHT -> {
-                step.put("parameters", new JSONObject().put("direction",Direction.getRight(drone.getDirection()).toString()));
-            }
-            case ECHO_FRONT -> {
-                step.put("parameters", new JSONObject().put("direction",drone.getDirection().toString()));
-            }
-            default->{
-            }
-        }
+        ActionFacade facade = new ActionFacade();
+        JSONObject step = facade.createDecision(action, this.drone);
         return step;
     }
     public Action getLastAction() {
